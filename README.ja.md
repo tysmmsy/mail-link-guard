@@ -100,12 +100,6 @@ Chromeの表示言語に合わせて切り替わります。
 Google管理コンソール、Windowsのグループポリシー、macOSの構成プロファイルに対応しています。
 詳しくは[docs/enterprise.ja.md](docs/enterprise.ja.md)を参照してください。
 
-## デザイン
-
-設定画面とポップアップは[shadcn/ui](https://ui.shadcn.com/)（React、Radix UI、Tailwind CSS）で作り、クラシックMac OSの見た目にしています。
-アニメーションはありません。
-メールのページのダイアログは、ライブラリを使わずに同じ見た目で作っており、クリックしてすぐに表示します。
-
 ## 開発
 
 Node.js 24とpnpmが必要です。

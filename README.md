@@ -81,10 +81,6 @@ The interface follows Chrome's display language. It is available in English, Jap
 
 Administrators can enforce settings through Chrome policy (Google Admin console, Windows Group Policy, macOS configuration profiles): lock link checking on, push blocklist entries users cannot remove, and turn off users' own entries. See [docs/enterprise.md](docs/enterprise.md).
 
-## Design
-
-The settings page and the popup are built with [shadcn/ui](https://ui.shadcn.com/) components (React, Radix UI, Tailwind CSS), restyled after the classic Mac OS "Platinum" look: gray windows, pinstriped title bars and beveled buttons, with no animations. The dialog shown on the mail page is plain DOM with the same look, so the mail page loads no framework and the dialog appears in the same frame as the click.
-
 ## Development
 
 Requires Node.js 24 and pnpm.
