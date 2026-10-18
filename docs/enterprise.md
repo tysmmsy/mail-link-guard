@@ -18,7 +18,7 @@ A link to an enforced destination shows "Your organization's administrator block
 
 ## Extension ID
 
-Policies are tied to the extension ID. Use the ID of the Chrome Web Store listing. An unpacked copy gets an ID derived from its folder path, so it is only useful for testing on one machine.
+Policies are tied to the extension ID. The Chrome Web Store ID is `mofhdbekklmpogblinkohjliliopgkog`; the examples below use it. An unpacked copy gets an ID derived from its folder path, so it is only useful for testing on one machine.
 
 ## Google Admin console
 
@@ -55,7 +55,7 @@ The command fails when an entry cannot be read, so it can also check the list in
 ```reg
 Windows Registry Editor Version 5.00
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\<EXTENSION_ID>\policy]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\mofhdbekklmpogblinkohjliliopgkog\policy]
 "enforcedEnabled"=dword:00000001
 "allowUserBlocklist"=dword:00000001
 "enforcedBlocklist"="[{\"type\":\"domain\",\"value\":\"known-phishing.example\",\"note\":\"Reported by IT\"}]"
@@ -65,7 +65,7 @@ Lists are written as a JSON string. Force installation uses the `ExtensionInstal
 
 ## macOS (configuration profile)
 
-Deliver a managed preferences payload for the domain `com.google.Chrome.extensions.<EXTENSION_ID>`:
+Deliver a managed preferences payload for the domain `com.google.Chrome.extensions.mofhdbekklmpogblinkohjliliopgkog`:
 
 ```xml
 <key>enforcedEnabled</key>
