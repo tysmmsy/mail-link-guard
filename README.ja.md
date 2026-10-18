@@ -21,6 +21,13 @@ MIT Licenseのオープンソースです。
 
 ![ブロックした行き先](release-assets/blocked-ja.png)
 
+## インストール
+
+- Chrome Web Store：審査中です。公開されたら、ここにリンクを載せます。
+- それまでは、[Releases](https://github.com/tysmmsy/mail-link-guard/releases)から`mail-link-guard-<版>.zip`を取得して展開し、`chrome://extensions`でデベロッパーモードをオンにして、「パッケージ化されていない拡張機能を読み込む」で展開したフォルダを選んでください。
+
+手元の拡張機能を更新したら、拡張機能と、開いているメールのタブを再読み込みしてください。
+
 ## ブロックリスト
 
 | 種類 | 対象 | 例 |

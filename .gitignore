@@ -4,3 +4,4 @@ release/
 test-results/
 *.zip
 .DS_Store
+.vscode/
