@@ -146,6 +146,7 @@ pnpm typecheck
 pnpm package        # release/mail-link-guard-<version>.zip を作る
 pnpm screenshots    # release/screenshots/ に画面を書き出す
 pnpm icons          # static/icons/ を描き直す
+pnpm policy list.json  # 書き出したブロックリストからポリシー用JSONを作る（docs/enterprise.ja.md）
 ```
 
 自分のChromeで試すときは、`chrome://extensions`でデベロッパーモードをオンにし、「パッケージ化されていない拡張機能を読み込む」で`dist/`を選びます。
