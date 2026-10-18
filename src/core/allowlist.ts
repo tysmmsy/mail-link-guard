@@ -58,6 +58,25 @@ export function allowKey(e: Pick<AllowEntry, "host" | "includeSubdomains">): str
   return `${e.includeSubdomains ? "*." : ""}${e.host}`;
 }
 
+/**
+ * True when the path holds nothing a redirector could read as another address: after
+ * decoding twice and dropping tab, CR and LF, no backslash, colon, "@" or double slash.
+ * Like the query rule, this refuses whole classes of input instead of listing spellings;
+ * the redirect-target note only describes what it can recognize.
+ */
+function plainPath(pathname: string): boolean {
+  let text = pathname;
+  for (let i = 0; i < 2; i++) {
+    try {
+      text = decodeURIComponent(text);
+    } catch {
+      return false;
+    }
+  }
+  text = text.replace(/[\t\r\n]/g, "");
+  return !/[\\:@]|\/\//.test(text);
+}
+
 function hostAllowed(entries: readonly AllowEntry[], host: string): AllowEntry | null {
   for (const e of entries) {
     if (e.includeSubdomains ? isSameOrSubdomain(host, e.host) : host === e.host) return e;
@@ -79,6 +98,7 @@ export function allowedToSkip(
   // encodings catches every form. So an allowlisted link skips the dialog only when it
   // has neither; a redirect target in the path raises the redirect-target note instead.
   if (d.protocol !== "https:" || d.port !== "" || d.search !== "" || d.hash !== "") return null;
+  if (!plainPath(d.pathname)) return null;
   const entry = hostAllowed(entries, d.hostname);
   if (!entry) return null;
   // The shared-host note is expected for an organization's own tenant (for example

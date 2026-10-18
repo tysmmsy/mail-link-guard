@@ -65,6 +65,10 @@ describe("allowedToSkip", () => {
     assert.equal(skip(list, "https://www.example.com/news?id=1"), false);
     assert.equal(skip(list, "https://www.example.com/page#top"), false);
     assert.equal(skip(list, "https://www.example.com/go/https:%2F%2Fevil.test"), false);
+    assert.equal(skip(list, "https://www.example.com/go/https:/evil.test"), false);
+    assert.equal(skip(list, "https://www.example.com//[2001:db8::1]/"), false);
+    assert.equal(skip(list, "https://www.example.com/a%5Cb"), false);
+    assert.equal(skip(list, "https://www.example.com/news/2026/10/article-1"), true);
     assert.equal(skip(list, "https://user@www.example.com/"), false);
   });
 

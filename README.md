@@ -155,7 +155,7 @@ Links to sites on the allowlist open without the dialog, so the dialog keeps its
 - Sites can be added only on the options page, never from the dialog, so allowing is a deliberate choice rather than a click made while looking at a suspicious link.
 - Entries are host names. A host matches exactly unless "Include subdomains" is checked.
 - The blocklist always wins: a destination on both lists is blocked.
-- The dialog still appears when the link raises any note, is not HTTPS on the default port, or has a query (`?…`) or fragment (`#…`), where redirect targets travel. The check uses the destination after removing redirect wrappers.
+- The dialog still appears when the link raises any note, is not HTTPS on the default port, or has a query (`?…`), a fragment (`#…`) or a path with `\`, `:`, `@` or `//`, where redirect targets travel. The check uses the destination after removing redirect wrappers.
 - Sites where anyone can publish pages (such as `sites.google.com`, `github.io`, `sharepoint.com`, `notion.site`) and URL shorteners cannot be added, and "Include subdomains" is refused when it would cover one of them (for example `google.com` would cover `sites.google.com`). Links to these sites show a note in the dialog.
 - The allowlist cannot be imported; organizations push allowed sites through policy instead.
 - Up to 1,000 sites.

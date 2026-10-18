@@ -120,10 +120,13 @@ function decodeSafe(s: string): string {
 
 // After a double slash or backslash ("//host", "\\host", "/\\host"), or right after a
 // scheme without slashes ("https:host"): the host part of an embedded URL.
-const EMBEDDED_AUTHORITY = /(?:[\\/]{2}|\bhttps?:(?=[^\\/]))([^\s\\/?#&=]+)/gi;
+// "//host", "\\\\host", or a scheme followed by zero or one slash ("https:host", "https:/host").
+const EMBEDDED_AUTHORITY =
+  /(?:[\\/]{2}|\bhttps?:[\\/]?(?=[^\\/]))(\[[0-9a-f:.]+\]|[^\s\\/?#&=]+)/gi;
 
 /** The host of an authority such as "user:pw@evil.example:8443", or null if it has no dot. */
 function hostOfAuthority(authority: string): string | null {
+  if (authority.startsWith("[")) return authority.toLowerCase();
   const afterUserinfo = authority.slice(authority.lastIndexOf("@") + 1);
   const host = afterUserinfo.replace(/:\d*$/, "").toLowerCase().replace(/\.$/, "");
   return host.includes(".") ? host : null;
