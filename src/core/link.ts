@@ -16,7 +16,8 @@ export type NoteKind =
   | "punycode"
   | "shortener"
   | "credentials"
-  | "shared-host";
+  | "shared-host"
+  | "redirect-target";
 
 export interface LinkAnalysis {
   /** The href exactly as the browser resolved it from the anchor. */
@@ -31,6 +32,8 @@ export interface LinkAnalysis {
   unicodeHost: string;
   /** Host written in the visible text, when the text looks like a URL or domain. */
   textHost: string | null;
+  /** Another site the URL appears to forward to (open-redirect style), if any. */
+  redirectTarget: string | null;
   notes: NoteKind[];
 }
 
@@ -107,6 +110,37 @@ function hostsRelated(a: string, b: string): boolean {
   return isSameOrSubdomain(x, y) || isSameOrSubdomain(y, x);
 }
 
+function decodeSafe(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
+// After a double slash or backslash ("//host", "\\host", "/\\host"), or right after a
+// scheme without slashes ("https:host"): the host part of an embedded URL.
+const EMBEDDED_HOST = /(?:[\\/]{2}|\bhttps?:(?=[^\\/]))([^\s\\/?#&=]+\.[^\s\\/?#&=]+)/i;
+
+/**
+ * The host of another site this URL appears to hand to a redirector, read from the
+ * decoded path, query (keys and values) and fragment, or null. Tab, CR and LF are removed
+ * first because browsers drop them from URLs ("/\t/evil.example" acts as "//evil.example").
+ */
+export function embeddedTarget(url: URL): string | null {
+  const parts = [url.pathname.slice(1), url.search.slice(1), url.hash.slice(1)];
+  for (const raw of parts) {
+    if (!raw) continue;
+    // Decode twice to catch double encoding, as many redirectors decode again.
+    const text = decodeSafe(decodeSafe(raw.replace(/\+/g, " "))).replace(/[\t\r\n]/g, "");
+    const m = EMBEDDED_HOST.exec(text);
+    if (!m) continue;
+    const host = m[1].toLowerCase().replace(/\.$/, "");
+    if (!isSameOrSubdomain(host, url.hostname)) return host;
+  }
+  return null;
+}
+
 export function analyzeLink(rawHref: string, rawText: string, base?: string): LinkAnalysis | null {
   const url = parseHttpUrl(rawHref, base);
   if (!url) return null;
@@ -123,6 +157,8 @@ export function analyzeLink(rawHref: string, rawText: string, base?: string): Li
   if (matchesAnyDomain(host, SHORTENER_DOMAINS)) notes.push("shortener");
   else if (matchesAnyDomain(host, SHARED_HOSTING)) notes.push("shared-host");
   if (destination.username || destination.password) notes.push("credentials");
+  const redirectTarget = embeddedTarget(destination);
+  if (redirectTarget) notes.push("redirect-target");
 
   return {
     href: url.href,
@@ -131,6 +167,7 @@ export function analyzeLink(rawHref: string, rawText: string, base?: string): Li
     text,
     unicodeHost: toUnicodeHost(host),
     textHost,
+    redirectTarget,
     notes,
   };
 }

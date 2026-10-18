@@ -129,6 +129,8 @@ function noteText(kind: NoteKind, a: LinkAnalysis): string {
       return t("notePunycode");
     case "shortener":
       return t("noteShortener");
+    case "redirect-target":
+      return t("noteRedirectTarget", a.redirectTarget ?? "");
     case "shared-host":
       return t("noteSharedHost", a.destination.hostname);
     case "credentials":

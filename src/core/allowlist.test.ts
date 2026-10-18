@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { type AllowEntry, allowedToSkip, carriesUrl, makeAllowEntry } from "./allowlist.ts";
+import { type AllowEntry, allowedToSkip, makeAllowEntry } from "./allowlist.ts";
 import { analyzeLink } from "./link.ts";
 
 const NOW = "2026-10-18T00:00:00.000Z";
@@ -42,24 +42,6 @@ describe("makeAllowEntry", () => {
   });
 });
 
-describe("carriesUrl", () => {
-  it("spots another URL in the query, path or fragment", () => {
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=https://evil.test/")));
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=https%3A%2F%2Fevil.test%2F")));
-    assert.ok(carriesUrl(new URL("https://a.test/go/https://evil.test/")));
-    assert.equal(carriesUrl(new URL("https://a.test/news?id=1")), false);
-  });
-
-  it("spots protocol-relative, backslash and encoded forms", () => {
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=//evil.test/")));
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=%2F%2Fevil.test")));
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=%5C%5Cevil.test")));
-    assert.ok(carriesUrl(new URL("https://a.test/r?to=/%5Cevil.test")));
-    assert.ok(carriesUrl(new URL("https://a.test/r#//evil.test")));
-    assert.equal(carriesUrl(new URL("https://a.test/a/b?c=d/e")), false);
-  });
-});
-
 describe("allowedToSkip", () => {
   const list = [entry("www.example.com"), entry("example.org", true)];
 
@@ -78,6 +60,11 @@ describe("allowedToSkip", () => {
     assert.equal(skip(list, "https://www.example.com:8443/"), false);
     assert.equal(skip(list, "https://www.example.com/", "https://bank.test/"), false);
     assert.equal(skip(list, "https://www.example.com/r?url=https://evil.test/"), false);
+    assert.equal(skip(list, "https://www.example.com/out?https://evil.test/"), false);
+    assert.equal(skip(list, "https://www.example.com/login?next=/%09/evil.test"), false);
+    assert.equal(skip(list, "https://www.example.com/news?id=1"), false);
+    assert.equal(skip(list, "https://www.example.com/page#top"), false);
+    assert.equal(skip(list, "https://www.example.com/go/https:%2F%2Fevil.test"), false);
     assert.equal(skip(list, "https://user@www.example.com/"), false);
   });
 

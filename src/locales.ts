@@ -26,6 +26,8 @@ export const en = {
   noteShortener: "This is a URL shortener. The final destination cannot be shown here.",
   noteSharedHost:
     "$1 is a site where anyone can publish pages. A well-known domain does not mean the page is genuine.",
+  noteRedirectTarget:
+    "This URL may forward you to $1, a different site from the destination shown above.",
   noteCredentials:
     'The URL has text before "@" ($1). The real destination is the domain after "@".',
   noteNone: "No format notes. This does not mean the link is safe.",
@@ -157,6 +159,7 @@ export const ja: Record<MessageKey, string> = {
   noteShortener: "短縮URLです。最終的な行き先は分かりません。",
   noteSharedHost:
     "$1はだれでもページを作れるサイトです。有名なドメインでも、本物のページとは限りません。",
+  noteRedirectTarget: "このURLは、上の行き先とは別のサイト（$1）へ転送する可能性があります。",
   noteCredentials: "URLの「@」の前に文字（$1）があります。実際の行き先は「@」の後ろです。",
   noteNone: "形式上の注意点はありません。安全という意味ではありません。",
   btnCancel: "キャンセル",
@@ -277,6 +280,7 @@ export const zh_CN: Record<MessageKey, string> = {
   notePunycode: "域名包含国际化字符（Punycode），可能在冒充其他域名。",
   noteShortener: "这是 URL 缩短服务。此处无法显示最终目标。",
   noteSharedHost: "$1 是任何人都能发布页面的网站。知名域名并不代表页面是真的。",
+  noteRedirectTarget: "此 URL 可能会把您转到 $1，这是与上方所示目标不同的网站。",
   noteCredentials: "该 URL 在“@”前含有文字（$1）。实际目标是“@”之后的域名。",
   noteNone: "没有格式方面的提示。这并不表示该链接是安全的。",
   btnCancel: "取消",
@@ -393,6 +397,7 @@ export const zh_TW: Record<MessageKey, string> = {
   notePunycode: "網域含有國際化字元（Punycode），可能是在仿冒其他網域。",
   noteShortener: "這是 URL 縮短服務。無法在此顯示最終目的地。",
   noteSharedHost: "$1 是任何人都能發布網頁的網站。知名網域不代表網頁是真的。",
+  noteRedirectTarget: "此網址可能會將您轉到 $1，這是與上方所示目的地不同的網站。",
   noteCredentials: "這個 URL 在「@」前含有文字（$1）。實際目的地是「@」後的網域。",
   noteNone: "沒有格式方面的提示。這並不代表連結是安全的。",
   btnCancel: "取消",
@@ -514,6 +519,7 @@ export const ko: Record<MessageKey, string> = {
   noteShortener: "URL 단축 서비스입니다. 여기서는 최종 연결 대상을 표시할 수 없습니다.",
   noteSharedHost:
     "$1은(는) 누구나 페이지를 만들 수 있는 사이트입니다. 잘 알려진 도메인이라도 진짜 페이지라는 뜻은 아닙니다.",
+  noteRedirectTarget: "이 URL은 위에 표시된 대상과 다른 사이트($1)로 이동시킬 수 있습니다.",
   noteCredentials: 'URL의 "@" 앞에 텍스트($1)가 있습니다. 실제 연결 대상은 "@" 뒤의 도메인입니다.',
   noteNone: "형식상 주의할 점이 없습니다. 링크가 안전하다는 의미는 아닙니다.",
   btnCancel: "취소",
@@ -643,6 +649,8 @@ export const es: Record<MessageKey, string> = {
   noteShortener: "Es un acortador de URL. Aquí no se puede mostrar el destino final.",
   noteSharedHost:
     "$1 es un sitio donde cualquiera puede publicar páginas. Un dominio conocido no significa que la página sea auténtica.",
+  noteRedirectTarget:
+    "Esta URL puede redirigirte a $1, un sitio distinto del destino mostrado arriba.",
   noteCredentials:
     'La URL tiene texto antes de "@" ($1). El destino real es el dominio que va después de "@".',
   noteNone: "No hay avisos de formato. Esto no significa que el enlace sea seguro.",
@@ -773,6 +781,8 @@ export const pt_BR: Record<MessageKey, string> = {
   noteShortener: "Este é um encurtador de URL. O destino final não pode ser exibido aqui.",
   noteSharedHost:
     "$1 é um site onde qualquer pessoa pode publicar páginas. Um domínio conhecido não significa que a página seja autêntica.",
+  noteRedirectTarget:
+    "Esta URL pode redirecionar você para $1, um site diferente do destino mostrado acima.",
   noteCredentials: 'A URL tem texto antes de "@" ($1). O destino real é o domínio depois de "@".',
   noteNone: "Nenhum aviso de formato. Isso não significa que o link seja seguro.",
   btnCancel: "Cancelar",
@@ -905,6 +915,8 @@ export const fr: Record<MessageKey, string> = {
     "Il s'agit d'un raccourcisseur d'URL. La destination finale ne peut pas être affichée ici.",
   noteSharedHost:
     "$1 est un site où chacun peut publier des pages. Un domaine connu ne garantit pas que la page est authentique.",
+  noteRedirectTarget:
+    "Cette URL peut vous rediriger vers $1, un site différent de la destination affichée ci-dessus.",
   noteCredentials:
     'L\'URL contient du texte avant "@" ($1). La destination réelle est le domaine situé après "@".',
   noteNone: "Aucune remarque sur le format. Cela ne signifie pas que le lien est sûr.",
@@ -1038,6 +1050,8 @@ export const de: Record<MessageKey, string> = {
     "Dies ist ein URL-Kürzungsdienst. Das endgültige Ziel kann hier nicht angezeigt werden.",
   noteSharedHost:
     "Auf $1 kann jeder Seiten veröffentlichen. Eine bekannte Domain bedeutet nicht, dass die Seite echt ist.",
+  noteRedirectTarget:
+    "Diese URL kann Sie zu $1 weiterleiten, einer anderen Website als dem oben angezeigten Ziel.",
   noteCredentials:
     "Die URL enthält Text vor „@“ ($1). Das tatsächliche Ziel ist die Domain nach „@“.",
   noteNone: "Keine Hinweise zum Format. Das bedeutet nicht, dass der Link sicher ist.",
@@ -1173,6 +1187,8 @@ export const it: Record<MessageKey, string> = {
     "Questo è un servizio per abbreviare gli URL. La destinazione finale non può essere mostrata qui.",
   noteSharedHost:
     "$1 è un sito in cui chiunque può pubblicare pagine. Un dominio noto non significa che la pagina sia autentica.",
+  noteRedirectTarget:
+    "Questo URL potrebbe reindirizzarti a $1, un sito diverso dalla destinazione mostrata sopra.",
   noteCredentials:
     "L'URL contiene del testo prima di «@» ($1). La vera destinazione è il dominio dopo «@».",
   noteNone: "Nessuna nota sul formato. Questo non significa che il link sia sicuro.",
@@ -1308,6 +1324,8 @@ export const ru: Record<MessageKey, string> = {
   noteShortener: "Это сервис сокращения URL. Конечный адрес здесь показать нельзя.",
   noteSharedHost:
     "$1 — сайт, где любой может публиковать страницы. Известный домен не означает, что страница настоящая.",
+  noteRedirectTarget:
+    "Этот URL может перенаправить вас на $1 — другой сайт, чем указанный выше адрес.",
   noteCredentials: "В URL есть текст перед «@» ($1). Настоящий адрес назначения — домен после «@».",
   noteNone: "Замечаний по формату нет. Это не значит, что ссылка безопасна.",
   btnCancel: "Отмена",
