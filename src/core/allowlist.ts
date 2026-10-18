@@ -3,7 +3,7 @@
 // - entries are host names only (no URLs, wildcards or regexes), exact by default;
 // - hosts where anyone can publish pages, and URL shorteners, cannot be added by users;
 // - a link is let through only when it raises no format note, uses plain HTTPS on the
-//   default port, and carries no other URL that could be a redirect;
+//   default port, and has no query or fragment (where redirect targets travel);
 // - the blocklist always wins (checked by the caller before this).
 // Entries are added only from the options page, never from the in-page dialog.
 
@@ -59,24 +59,22 @@ export function allowKey(e: Pick<AllowEntry, "host" | "includeSubdomains">): str
 }
 
 /**
- * True when the path, a query value or the fragment carries another URL: a possible
- * redirect. Covers "https://", protocol-relative "//host", backslash forms browsers treat
- * as slashes ("\\host", "/\\host"), and their percent-encoded variants.
+ * True when the path holds nothing a redirector could read as another address: after
+ * decoding twice and dropping tab, CR and LF, no backslash, colon, "@" or double slash.
+ * Like the query rule, this refuses whole classes of input instead of listing spellings;
+ * the redirect-target note only describes what it can recognize.
  */
-export function carriesUrl(url: URL): boolean {
-  const pattern = /[\\/]{2}|(?:%2f|%5c){2}/i;
-  // The path always starts with one "/", so only a second slash right after counts.
-  if (pattern.test(url.pathname)) return true;
-  for (const value of url.searchParams.values()) if (pattern.test(value)) return true;
-  return pattern.test(decodeSafe(url.hash));
-}
-
-function decodeSafe(s: string): string {
-  try {
-    return decodeURIComponent(s);
-  } catch {
-    return s;
+function plainPath(pathname: string): boolean {
+  let text = pathname;
+  for (let i = 0; i < 2; i++) {
+    try {
+      text = decodeURIComponent(text);
+    } catch {
+      return false;
+    }
   }
+  text = text.replace(/[\t\r\n]/g, "");
+  return !/[\\:@]|\/\//.test(text);
 }
 
 function hostAllowed(entries: readonly AllowEntry[], host: string): AllowEntry | null {
@@ -96,7 +94,11 @@ export function allowedToSkip(
 ): AllowEntry | null {
   if (entries.length === 0) return null;
   const d = analysis.destination;
-  if (d.protocol !== "https:" || d.port !== "" || carriesUrl(d)) return null;
+  // A query or fragment is where redirectors take their target, and no denylist of
+  // encodings catches every form. So an allowlisted link skips the dialog only when it
+  // has neither; a redirect target in the path raises the redirect-target note instead.
+  if (d.protocol !== "https:" || d.port !== "" || d.search !== "" || d.hash !== "") return null;
+  if (!plainPath(d.pathname)) return null;
   const entry = hostAllowed(entries, d.hostname);
   if (!entry) return null;
   // The shared-host note is expected for an organization's own tenant (for example

@@ -9,7 +9,7 @@ Mail Link Guard is an open source Chrome extension (MIT License) that pauses a l
 ## What it does
 
 - A click on a link in a message body is held, and a dialog shows the link text, the destination domain and the full URL. Lookalike domains are shown in their real characters (for example `αmazon.co.jp`) next to the `xn--` form.
-- The dialog points out format issues when they apply: link text naming a different domain, unencrypted HTTP, an IP address instead of a domain, Punycode domains, URL shorteners, and text before `@` in the URL. It never claims a link is "safe".
+- The dialog points out format issues when they apply: link text naming a different domain, unencrypted HTTP, an IP address instead of a domain, Punycode domains, URL shorteners, text before `@` in the URL, sites where anyone can publish pages, and another site the URL appears to forward to (an open redirect). It never claims a link is "safe".
 - Google's `google.com/url` redirect and Microsoft Safe Links are unwrapped so the real destination is shown. Opening the link still goes through the original URL.
 - The "Add to blocklist" section of the dialog registers the whole domain or just that URL, with an optional note, in one press of the red "Add to blocklist" button. Blocklisted destinations are blocked on every later click, including through redirects and outside the message body, and the dialog has no Open button for them.
 - The options page lists, filters, adds and removes entries, and imports or exports them as JSON.
@@ -155,7 +155,7 @@ Links to sites on the allowlist open without the dialog, so the dialog keeps its
 - Sites can be added only on the options page, never from the dialog, so allowing is a deliberate choice rather than a click made while looking at a suspicious link.
 - Entries are host names. A host matches exactly unless "Include subdomains" is checked.
 - The blocklist always wins: a destination on both lists is blocked.
-- The dialog still appears when the link raises any note, is not HTTPS on the default port, or carries another URL (a possible redirect). The check uses the destination after removing redirect wrappers.
+- The dialog still appears when the link raises any note, is not HTTPS on the default port, or has a query (`?…`), a fragment (`#…`) or a path with `\`, `:`, `@` or `//`, where redirect targets travel. The check uses the destination after removing redirect wrappers.
 - Sites where anyone can publish pages (such as `sites.google.com`, `github.io`, `sharepoint.com`, `notion.site`) and URL shorteners cannot be added, and "Include subdomains" is refused when it would cover one of them (for example `google.com` would cover `sites.google.com`). Links to these sites show a note in the dialog.
 - The allowlist cannot be imported; organizations push allowed sites through policy instead.
 - Up to 1,000 sites.

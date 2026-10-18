@@ -2,7 +2,13 @@
 // redirect wrappers that mail services add) and lists neutral format notes for the
 // confirmation dialog. Kept free of DOM and chrome APIs so it is unit-testable.
 
-import { hasPunycodeLabel, isIpHost, isSameOrSubdomain, matchesAnyDomain } from "./hosts.ts";
+import {
+  hasPunycodeLabel,
+  isIpHost,
+  isSameOrSubdomain,
+  matchesAnyDomain,
+  normalizeHost,
+} from "./hosts.ts";
 import { toUnicodeHost } from "./punycode.ts";
 import { SHARED_HOSTING } from "./shared-hosting.ts";
 import { SHORTENER_DOMAINS } from "./shorteners.ts";
@@ -16,7 +22,8 @@ export type NoteKind =
   | "punycode"
   | "shortener"
   | "credentials"
-  | "shared-host";
+  | "shared-host"
+  | "redirect-target";
 
 export interface LinkAnalysis {
   /** The href exactly as the browser resolved it from the anchor. */
@@ -31,6 +38,8 @@ export interface LinkAnalysis {
   unicodeHost: string;
   /** Host written in the visible text, when the text looks like a URL or domain. */
   textHost: string | null;
+  /** Another site the URL appears to forward to (open-redirect style), if any. */
+  redirectTarget: string | null;
   notes: NoteKind[];
 }
 
@@ -107,6 +116,61 @@ function hostsRelated(a: string, b: string): boolean {
   return isSameOrSubdomain(x, y) || isSameOrSubdomain(y, x);
 }
 
+function decodeSafe(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
+// After a double slash or backslash ("//host", "\\host", "/\\host"), or right after a
+// scheme without slashes ("https:host"): the host part of an embedded URL.
+// "//host", "\\\\host", or a scheme followed by zero or one slash ("https:host", "https:/host").
+const EMBEDDED_AUTHORITY =
+  /(?:[\\/]{2}|\bhttps?:[\\/]?(?=[^\\/]))(\[[0-9a-f:.]+\]|[^\s\\/?#&=]+)/gi;
+
+/**
+ * The host of an authority such as "user:pw@evil.example:8443", in the same ASCII
+ * (Punycode) form the URL parser gives the destination, or null if it is not a host.
+ */
+function hostOfAuthority(authority: string): string | null {
+  const afterUserinfo = authority.slice(authority.lastIndexOf("@") + 1);
+  const ipv6 = /^\[[0-9a-f:.]+\]/i.exec(afterUserinfo);
+  if (ipv6) return ipv6[0].toLowerCase();
+  const raw = afterUserinfo.replace(/:\d*$/, "").replace(/\.$/, "");
+  if (!raw.includes(".") && !raw.includes("。")) return null;
+  try {
+    return normalizeHost(new URL(`https://${raw}/`).hostname);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The host of another site this URL appears to hand to a redirector, read from the
+ * decoded path, query (keys and values) and fragment, or null. Tab, CR and LF are removed
+ * first because browsers drop them from URLs ("/\t/evil.example" acts as "//evil.example").
+ * Every candidate is checked, so a same-site URL earlier in the string cannot hide an
+ * off-site one later.
+ */
+export function embeddedTarget(url: URL): string | null {
+  // The path keeps its leading "/", which with a following "/" (or a tab-split "/\t/")
+  // forms a protocol-relative URL at the start of the path.
+  const parts = [url.pathname, url.search.slice(1), url.hash.slice(1)];
+  for (const raw of parts) {
+    if (!raw) continue;
+    // Decode twice to catch double encoding, as many redirectors decode again.
+    const text = decodeSafe(decodeSafe(raw.replace(/\+/g, " "))).replace(/[\t\r\n]/g, "");
+    for (const m of text.matchAll(EMBEDDED_AUTHORITY)) {
+      const host = hostOfAuthority(m[1]);
+      // Same site in either direction, ignoring "www.", is an in-site redirect.
+      if (host && !hostsRelated(host, url.hostname)) return host;
+    }
+  }
+  return null;
+}
+
 export function analyzeLink(rawHref: string, rawText: string, base?: string): LinkAnalysis | null {
   const url = parseHttpUrl(rawHref, base);
   if (!url) return null;
@@ -123,6 +187,8 @@ export function analyzeLink(rawHref: string, rawText: string, base?: string): Li
   if (matchesAnyDomain(host, SHORTENER_DOMAINS)) notes.push("shortener");
   else if (matchesAnyDomain(host, SHARED_HOSTING)) notes.push("shared-host");
   if (destination.username || destination.password) notes.push("credentials");
+  const redirectTarget = embeddedTarget(destination);
+  if (redirectTarget) notes.push("redirect-target");
 
   return {
     href: url.href,
@@ -131,6 +197,7 @@ export function analyzeLink(rawHref: string, rawText: string, base?: string): Li
     text,
     unicodeHost: toUnicodeHost(host),
     textHost,
+    redirectTarget,
     notes,
   };
 }

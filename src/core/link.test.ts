@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { analyzeLink, hostInText, unwrap } from "./link.ts";
+import { analyzeLink, embeddedTarget, hostInText, unwrap } from "./link.ts";
 
 const notesOf = (href: string, text = "") => analyzeLink(href, text)?.notes ?? null;
 
@@ -94,5 +94,47 @@ describe("hostInText", () => {
   it("returns null for ordinary words", () => {
     assert.equal(hostInText("Click here"), null);
     assert.equal(hostInText("version 1.2.3"), null);
+  });
+});
+
+describe("embeddedTarget", () => {
+  const target = (href: string) => embeddedTarget(new URL(href));
+
+  it("finds another site handed to a redirector, in any common spelling", () => {
+    assert.equal(target("https://a.test/out?https://evil.test/x"), "evil.test");
+    assert.equal(target("https://a.test/r?to=https%3A%2F%2Fevil.test"), "evil.test");
+    assert.equal(target("https://a.test/r?to=https%253A%252F%252Fevil.test"), "evil.test");
+    assert.equal(target("https://a.test/login?next=/%09/evil.test"), "evil.test");
+    assert.equal(target("https://a.test/r?to=%5C%5Cevil.test"), "evil.test");
+    assert.equal(target("https://a.test/r?to=https:evil.test"), "evil.test");
+    assert.equal(target("https://a.test/go/https:%2F%2Fevil.test/x"), "evil.test");
+    assert.equal(target("https://a.test/#//evil.test"), "evil.test");
+    assert.equal(target("https://a.test//evil.test/x"), "evil.test");
+    assert.equal(target("https://a.test/%09/evil.test"), "evil.test");
+    assert.equal(target("https://a.test/r?a=https://a.test/&b=https://evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/go/https://a.test/https://evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/r?to=https://a.test@evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/r?to=//user:pw@evil.test:8443/"), "evil.test");
+    assert.equal(target("https://a.test/go/https:/evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/go/http:%5Cevil.test/"), "evil.test");
+    assert.equal(target("https://a.test//[2001:db8::1]/x"), "[2001:db8::1]");
+    assert.equal(target("https://a.test/r?to=//user@[2001:db8::1]:8443/"), "[2001:db8::1]");
+    assert.equal(target("https://a.test/r?to=https://αmazon.co.jp/"), "xn--mazon-c9d.co.jp");
+  });
+
+  it("ignores ordinary queries and redirects within the same site", () => {
+    assert.equal(target("https://a.test/news?id=1&ref=mail"), null);
+    assert.equal(target("https://a.test/login?next=/dashboard"), null);
+    assert.equal(target("https://a.test/r?to=https://www.a.test/x"), null);
+    assert.equal(target("https://www.a.test/r?to=https://a.test/x"), null);
+    // An internationalized same-site host, written in Unicode in the query.
+    assert.equal(target("https://xn--r8jz45g.jp/r?to=https://例え.jp/x"), null);
+    assert.equal(target("https://a.test/page#section-2"), null);
+  });
+
+  it("adds a note naming the target", () => {
+    const a = analyzeLink("https://a.test/out?https://evil.test/", "Open document");
+    assert.deepEqual(a?.notes, ["redirect-target"]);
+    assert.equal(a?.redirectTarget, "evil.test");
   });
 });

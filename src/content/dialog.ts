@@ -4,6 +4,7 @@
 import type { BlockEntry, EntryType } from "../core/blocklist.ts";
 import { t } from "../core/i18n.ts";
 import type { LinkAnalysis, NoteKind } from "../core/link.ts";
+import { toUnicodeHost } from "../core/punycode.ts";
 
 export interface DialogHandlers {
   open(): void;
@@ -117,6 +118,12 @@ function safeDecode(s: string): string {
   }
 }
 
+/** A Punycode host as a person reads it, with the ASCII form beside it when they differ. */
+function displayHost(host: string): string {
+  const unicode = toUnicodeHost(host);
+  return unicode === host ? host : `${unicode} (${host})`;
+}
+
 function noteText(kind: NoteKind, a: LinkAnalysis): string {
   switch (kind) {
     case "text-mismatch":
@@ -129,6 +136,8 @@ function noteText(kind: NoteKind, a: LinkAnalysis): string {
       return t("notePunycode");
     case "shortener":
       return t("noteShortener");
+    case "redirect-target":
+      return t("noteRedirectTarget", displayHost(a.redirectTarget ?? ""));
     case "shared-host":
       return t("noteSharedHost", a.destination.hostname);
     case "credentials":
