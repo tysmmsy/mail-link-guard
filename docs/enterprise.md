@@ -38,6 +38,16 @@ Devices > Chrome > Apps & extensions > Users & browsers, select the extension, a
 
 Set the installation policy to "Force install" so users cannot remove the extension.
 
+### Keeping the list in Git
+
+Keep the organization's list as JSONL (one entry per line, the same format the options page exports) and generate the policy JSON from it:
+
+```sh
+pnpm policy blocklist.jsonl > policy.json
+```
+
+The command fails when a line cannot be read, so it can also check the list in CI. "Export for policy (JSON)" on the options page writes the same JSON from a list built in the browser.
+
 ## Windows (Group Policy or registry)
 
 ```reg
