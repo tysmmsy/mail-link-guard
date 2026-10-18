@@ -18,6 +18,13 @@ The extension runs only on `https://mail.google.com/*`.
 
 ![Blocked destination](release-assets/blocked-en.png)
 
+## Install
+
+- Chrome Web Store: under review. The link will be added here once the listing is live.
+- Until then, download `mail-link-guard-<version>.zip` from [Releases](https://github.com/tysmmsy/mail-link-guard/releases), unzip it, open `chrome://extensions`, turn on Developer mode, choose "Load unpacked" and select the unzipped folder.
+
+After updating an unpacked copy, reload the extension and any open mail tabs.
+
 ## Blocklist entries
 
 | Type | Matches | Example |
