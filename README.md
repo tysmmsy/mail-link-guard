@@ -12,7 +12,7 @@ Mail Link Guard is an open source Chrome extension (MIT License) that pauses a l
 - The dialog points out format issues when they apply: link text naming a different domain, unencrypted HTTP, an IP address instead of a domain, Punycode domains, URL shorteners, and text before `@` in the URL. It never claims a link is "safe".
 - Google's `google.com/url` redirect and Microsoft Safe Links are unwrapped so the real destination is shown. Opening the link still goes through the original URL.
 - The "Add to blocklist" section of the dialog registers the whole domain or just that URL, with an optional note, in one press of the red "Add to blocklist" button. Blocklisted destinations are blocked on every later click, including through redirects and outside the message body, and the dialog has no Open button for them.
-- The options page lists, filters, adds and removes entries, and imports or exports them as JSONL (one entry per line).
+- The options page lists, filters, adds and removes entries, and imports or exports them as JSON.
 
 The extension runs only on `https://mail.google.com/*`.
 
@@ -31,17 +31,21 @@ Wildcards and regular expressions are tested against the URL both as the browser
 
 ### File format
 
-The options page exports JSON Lines: one entry per line, so a shared list diffs, merges and appends cleanly in Git.
+Import and export use one JSON file. Entries are written one per line, so a list kept in Git still diffs line by line.
 
-```jsonl
-{"type":"domain","value":"evil.example","note":"fake parcel notice","addedAt":"2026-10-18T00:00:00.000Z"}
-{"type":"wildcard","value":"*.amaz0n.*","note":"","addedAt":"2026-10-18T00:00:00.000Z"}
-"https://cdn.example.com/phish/"
+```json
+{
+  "format": "mail-link-guard/blocklist",
+  "version": 1,
+  "exportedAt": "2026-10-18T00:00:00.000Z",
+  "entries": [
+    {"type":"domain","value":"evil.example","note":"fake parcel notice","addedAt":"2026-10-18T00:00:00.000Z"},
+    {"type":"wildcard","value":"*.amaz0n.*","note":"","addedAt":"2026-10-18T00:00:00.000Z"}
+  ]
+}
 ```
 
-- A line can also be a plain string; its type is guessed (`/.../` is a regex, `*` makes a wildcard, a URL with a path is a URL, anything else a domain). `note` and `addedAt` are optional. Blank lines are skipped, and a line that cannot be read is reported and skipped.
-- Import also reads JSON: an array of entries or strings, or the older export file.
-- "Export for policy (JSON)" writes the JSON an administrator pastes into Chrome policy. `pnpm policy blocklist.jsonl` does the same from the command line and fails if any line is invalid.
+Import also reads a bare array of entries, or of strings such as `["evil.example", "*.amaz0n.*"]`; the type of a string is guessed (`/.../` is a regex, `*` makes a wildcard, a URL with a path is a URL, anything else a domain).
 
 ### Limits
 

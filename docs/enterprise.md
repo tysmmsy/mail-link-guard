@@ -40,13 +40,13 @@ Set the installation policy to "Force install" so users cannot remove the extens
 
 ### Keeping the list in Git
 
-Keep the organization's list as JSONL (one entry per line, the same format the options page exports) and generate the policy JSON from it:
+Keep the organization's list as a file exported from the options page and generate the policy JSON from it:
 
 ```sh
-pnpm policy blocklist.jsonl > policy.json
+pnpm policy blocklist.json > policy.json
 ```
 
-The command fails when a line cannot be read, so it can also check the list in CI. "Export for policy (JSON)" on the options page writes the same JSON from a list built in the browser.
+The command fails when an entry cannot be read, so it can also check the list in CI.
 
 ## Windows (Group Policy or registry)
 

@@ -24,38 +24,38 @@ const STYLE = `
 .backdrop {
   position: fixed; inset: 0; z-index: 2147483647; display: flex; align-items: center;
   justify-content: center; padding: 16px; background: rgba(0, 0, 0, 0.25);
-  font: 13px/1.5 "Osaka", "Charcoal", "Chicago", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+  font: 16px/1.5 "Osaka", "Charcoal", "Chicago", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
     "Meiryo", system-ui, sans-serif;
   color: #000;
 }
 .dialog {
-  width: min(540px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #ddd;
+  width: min(640px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #ddd;
   border: 1px solid #000;
   box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #999, 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 h2 {
-  margin: 0; height: 22px; display: flex; align-items: center; justify-content: center;
+  margin: 0; height: 28px; display: flex; align-items: center; justify-content: center;
   border-bottom: 1px solid #000; padding: 5px 4px; background-color: #ddd;
   background-image: repeating-linear-gradient(to bottom, #eee 0 1px, #999 1px 2px);
   background-clip: content-box;
 }
-h2 span { background: #ddd; padding: 0 8px; font-size: 13px; line-height: 12px; font-weight: bold; }
+h2 span { background: #ddd; padding: 0 8px; font-size: 16px; line-height: 16px; font-weight: bold; }
 .blocked h2 span { color: #c00; }
 .content { padding: 12px 16px 16px; }
 dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
 dt { color: #333; }
 dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-.host { font-size: 15px; font-weight: bold; }
-.ascii { font: 12px "Monaco", "Osaka-Mono", ui-monospace, Menlo, monospace; color: #333; }
+.host { font-size: 19px; font-weight: bold; }
+.ascii { font: 14px "Monaco", "Osaka-Mono", ui-monospace, Menlo, monospace; color: #333; }
 .url {
-  font: 12px/1.4 "Monaco", "Osaka-Mono", ui-monospace, Menlo, monospace; background: #fff;
+  font: 14px/1.4 "Monaco", "Osaka-Mono", ui-monospace, Menlo, monospace; background: #fff;
   border: 1px solid #000; box-shadow: -1px -1px 0 #999, 1px 1px 0 #fff; padding: 3px 5px;
   max-height: 6em; overflow: auto;
 }
-.info { margin: 10px 0 0; font-size: 12px; color: #333; }
+.info { margin: 10px 0 0; font-size: 14px; color: #333; }
 .notes {
   margin: 10px 0 0; padding: 6px 10px 6px 26px; background: #ffc; border: 1px solid #000;
-  font-size: 12px;
+  font-size: 14px;
 }
 .notes li + li { margin-top: 2px; }
 .message { margin: 10px 0 0; padding: 6px 10px; background: #fff; border: 2px solid #c00; }
@@ -64,21 +64,21 @@ dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   box-shadow: 1px 1px 0 #fff, inset 1px 1px 0 #fff; display: grid; gap: 6px;
 }
 .panel legend { padding: 0 4px; font-weight: bold; }
-.panel .help { margin: 0 0 2px; font-size: 12px; }
+.panel .help { margin: 0 0 2px; font-size: 14px; }
 .panel label { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
 .panel .note-label, .panel .row button { flex: none; }
 .panel input[type="radio"] { margin: 0; accent-color: #000; }
 .panel input[type="text"] {
-  font: inherit; color: #000; background: #fff; width: 100%; height: 22px; padding: 0 4px;
+  font: inherit; color: #000; background: #fff; width: 100%; height: 28px; padding: 0 6px;
   border: 1px solid #000; box-shadow: -1px -1px 0 #999, 1px 1px 0 #fff; border-radius: 0;
 }
 .panel .row { display: flex; gap: 10px; align-items: center; }
-.error { color: #c00; font-size: 12px; margin: 0; }
+.error { color: #c00; font-size: 14px; margin: 0; }
 .error:empty { display: none; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
 .actions .spacer { flex: 1; }
 button {
-  font: inherit; font-size: 13px; min-width: 80px; height: 22px; padding: 0 12px; color: #000;
+  font: inherit; font-size: 16px; min-width: 96px; height: 28px; padding: 0 14px; color: #000;
   border: 1px solid #000; border-radius: 5px; cursor: default; white-space: nowrap;
   background-image: linear-gradient(#fff, #ddd);
   box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #999;

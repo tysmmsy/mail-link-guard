@@ -46,14 +46,13 @@ Chrome Web StoreのIDを使ってください。
 
 ### リストをGitで管理する
 
-組織のリストをJSONL（1行1項目。設定画面のエクスポートと同じ形式）で管理し、そこからポリシーのJSONを作れます。
+組織のリストを設定画面から書き出したJSONで管理し、そこからポリシーのJSONを作れます。
 
 ```sh
-pnpm policy blocklist.jsonl > policy.json
+pnpm policy blocklist.json > policy.json
 ```
 
-読めない行があると失敗するので、CIでのリストの検査にも使えます。
-ブラウザで作ったリストからは、設定画面の「ポリシー用JSONをエクスポート」で同じJSONを書き出せます。
+読めない項目があると失敗するので、CIでのリストの検査にも使えます。
 
 ## Windows（グループポリシーまたはレジストリ）
 

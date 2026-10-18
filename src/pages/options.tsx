@@ -35,8 +35,7 @@ import {
   mergeEntries,
   parseImport,
   removeEntry,
-  toJsonl,
-  toPolicyJson,
+  toExportJson,
 } from "../core/blocklist.ts";
 import { localizePage, t } from "../core/i18n.ts";
 import { loadSettings, saveSettings } from "../core/settings.ts";
@@ -123,7 +122,7 @@ function EntriesTable({
 function ManagedGroup({ entries }: { entries: BlockEntry[] }) {
   return (
     <Group title={t("optManaged")}>
-      <p className="mb-2 text-[12px]">{t("optManagedHelp")}</p>
+      <p className="mb-2 text-[14px]">{t("optManagedHelp")}</p>
       <EntriesTable id="managed-rows" entries={entries} />
     </Group>
   );
@@ -177,9 +176,9 @@ function BlocklistGroup({ entries, allowed }: { entries: BlockEntry[]; allowed: 
 
   return (
     <Group title={t("optBlocklist")}>
-      <p className="mb-2 text-[12px]">{t("optBlocklistHelp")}</p>
+      <p className="mb-2 text-[14px]">{t("optBlocklistHelp")}</p>
       {!allowed && (
-        <p id="user-list-disabled" className="mb-2 text-[12px] text-alert">
+        <p id="user-list-disabled" className="mb-2 text-[14px] text-alert">
           {t("optUserListDisabled")}
         </p>
       )}
@@ -232,7 +231,7 @@ function BlocklistGroup({ entries, allowed }: { entries: BlockEntry[]; allowed: 
           onChange={(e) => setFilter(e.target.value)}
           autoComplete="off"
         />
-        <span id="block-count" className="text-[12px]">
+        <span id="block-count" className="text-[14px]">
           {t("optCount", entries.length)}
         </span>
       </div>
@@ -242,7 +241,7 @@ function BlocklistGroup({ entries, allowed }: { entries: BlockEntry[]; allowed: 
         onRemove={allowed ? (entry) => void remove(entryKey(entry)) : undefined}
       />
       {entries.length === 0 && (
-        <p id="block-empty" className="mt-2 text-[12px]">
+        <p id="block-empty" className="mt-2 text-[14px]">
           {t("optBlocklistEmpty")}
         </p>
       )}
@@ -286,14 +285,12 @@ function ImportExportGroup({ entries, allowed }: { entries: BlockEntry[]; allowe
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  const exportJsonl = () =>
-    download(toJsonl(entries), "application/jsonl", "mail-link-guard-blocklist-{date}.jsonl");
-  const exportPolicy = () =>
-    download(toPolicyJson(entries), "application/json", "mail-link-guard-policy-{date}.json");
+  const exportJson = () =>
+    download(toExportJson(entries), "application/json", "mail-link-guard-blocklist-{date}.json");
 
   return (
     <Group title={t("optImportExport")}>
-      <p className="mb-2 text-[12px]">{t("optImportHelp")}</p>
+      <p className="mb-2 text-[14px]">{t("optImportHelp")}</p>
       <RadioGroup value={mode} onValueChange={(v) => setMode(v as "merge" | "replace")}>
         <Label>
           <RadioGroupItem value="merge" />
@@ -308,17 +305,14 @@ function ImportExportGroup({ entries, allowed }: { entries: BlockEntry[]; allowe
         <Button id="import-button" disabled={!allowed} onClick={() => fileRef.current?.click()}>
           {t("btnImport")}
         </Button>
-        <Button id="export-button" onClick={exportJsonl}>
+        <Button id="export-button" onClick={exportJson}>
           {t("btnExport")}
-        </Button>
-        <Button id="export-policy-button" onClick={exportPolicy}>
-          {t("btnExportPolicy")}
         </Button>
         <input
           ref={fileRef}
           id="import-file"
           type="file"
-          accept=".jsonl,.json,application/json,application/jsonl,application/x-ndjson"
+          accept=".json,application/json"
           hidden
           onChange={(e) => {
             const file = e.target.files?.[0];
@@ -341,7 +335,7 @@ function Options() {
   const locked = policy.enforcedEnabled !== undefined;
   return (
     <MacWindow title={t("optTitle")} className="mx-auto my-6 max-w-[760px]">
-      <p className="mt-2 text-[12px]">{t("optPrivacy")}</p>
+      <p className="mt-2 text-[14px]">{t("optPrivacy")}</p>
 
       <Group title={t("optGeneral")}>
         <Label>
@@ -354,7 +348,7 @@ function Options() {
           {t("optEnabled")}
         </Label>
         {locked && (
-          <p id="enabled-locked" className="mt-1 text-[12px]">
+          <p id="enabled-locked" className="mt-1 text-[14px]">
             {t(policy.enforcedEnabled ? "optLockedOn" : "optLockedOff")}
           </p>
         )}
@@ -365,11 +359,11 @@ function Options() {
       <ImportExportGroup entries={settings.blocklist} allowed={policy.allowUserBlocklist} />
 
       <Group title={t("optAbout")}>
-        <p id="version" className="text-[12px]">
+        <p id="version" className="text-[14px]">
           {t("optVersion", chrome.runtime.getManifest().version)}
         </p>
-        <p className="mt-1 text-[12px]">{t("optOpenSource")}</p>
-        <ul className="links mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[12px]">
+        <p className="mt-1 text-[14px]">{t("optOpenSource")}</p>
+        <ul className="links mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[14px]">
           <li>
             <a href={REPOSITORY} target="_blank" rel="noopener noreferrer">
               {t("linkSource")}

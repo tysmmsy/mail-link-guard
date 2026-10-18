@@ -10,7 +10,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
     >
       <table
         data-slot="table"
-        className={cn("w-full border-collapse text-[12px]", className)}
+        className={cn("w-full border-collapse text-[14px]", className)}
         {...props}
       />
     </div>
@@ -58,7 +58,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-[20px] border-r border-b border-ink bg-platinum px-2 text-left align-middle font-normal whitespace-nowrap shadow-[inset_1px_1px_0_var(--color-paper)] last:border-r-0",
+        "h-[24px] border-r border-b border-ink bg-platinum px-2 text-left align-middle font-normal whitespace-nowrap shadow-[inset_1px_1px_0_var(--color-paper)] last:border-r-0",
         className,
       )}
       {...props}
@@ -76,7 +76,7 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-2 text-[12px] text-platinum-shadow", className)}
+      className={cn("mt-2 text-[14px] text-platinum-shadow", className)}
       {...props}
     />
   );

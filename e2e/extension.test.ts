@@ -268,18 +268,12 @@ describe("options page", () => {
 
     const download = page.waitForEvent("download");
     await page.click("#export-button");
-    const file1 = await download;
-    assert.match(file1.suggestedFilename(), /\.jsonl$/);
-    const lines = (await readFile((await file1.path()) ?? "", "utf8")).trim().split("\n");
+    const exported = JSON.parse(await readFile((await (await download).path()) ?? "", "utf8"));
+    assert.equal(exported.format, "mail-link-guard/blocklist");
     assert.deepEqual(
-      lines.map((l) => JSON.parse(l).value),
+      exported.entries.map((e: { value: string }) => e.value),
       ["evil.test", "https://x.test/path", "https://bad.test/a"],
     );
-
-    const policyDownload = page.waitForEvent("download");
-    await page.click("#export-policy-button");
-    const policy = JSON.parse(await readFile((await (await policyDownload).path()) ?? "", "utf8"));
-    assert.equal(policy.enforcedBlocklist.Value.length, 3);
     await page.close();
   });
 });

@@ -271,20 +271,17 @@ export function removeEntry(entries: readonly BlockEntry[], key: string): BlockE
   return entries.filter((e) => entryKey(e) !== key);
 }
 
-/** One entry per line, the format the options page exports. Easy to diff, merge and append. */
-export function toJsonl(entries: readonly BlockEntry[]): string {
-  return entries
-    .map(({ type, value, note, addedAt }) => `${JSON.stringify({ type, value, note, addedAt })}\n`)
-    .join("");
-}
-
 /**
- * The JSON an administrator pastes into "Policy for extensions" in the Google Admin
- * console to enforce these entries for everyone (see docs/enterprise.md).
+ * The export file. Entries are written one per line inside the array, so a list kept
+ * in Git still diffs line by line while the file stays plain JSON.
  */
-export function toPolicyJson(entries: readonly BlockEntry[]): string {
-  const value = entries.map(({ type, value, note }) => ({ type, value, note }));
-  return `${JSON.stringify({ enforcedBlocklist: { Value: value } }, null, 2)}\n`;
+export function toExportJson(entries: readonly BlockEntry[], now = new Date()): string {
+  const lines = entries.map(
+    ({ type, value, note, addedAt }) => `    ${JSON.stringify({ type, value, note, addedAt })}`,
+  );
+  const head = `  "format": ${JSON.stringify(EXPORT_FORMAT)},\n  "version": ${EXPORT_VERSION},\n  "exportedAt": ${JSON.stringify(now.toISOString())},\n`;
+  const body = lines.length ? `[\n${lines.join(",\n")}\n  ]` : "[]";
+  return `{\n${head}  "entries": ${body}\n}\n`;
 }
 
 export interface ParseResult {
@@ -310,11 +307,11 @@ function entryFromItem(item: unknown, now: string): BlockEntry | null {
   return makeEntry(type, raw, note, addedAt);
 }
 
-/** Reads one JSON document: an export file, an array, or a single entry object. */
+/** Reads the entries out of an export file or a bare array. */
 function itemsFromJson(data: unknown): unknown[] {
   if (Array.isArray(data)) return data;
   if (data && typeof data === "object") {
-    const d = data as Partial<BlocklistExport> & { value?: unknown };
+    const d = data as Partial<BlocklistExport>;
     if (Array.isArray(d.entries)) {
       if (d.format !== undefined && d.format !== EXPORT_FORMAT)
         throw new ImportError("wrong-format");
@@ -323,54 +320,26 @@ function itemsFromJson(data: unknown): unknown[] {
       }
       return d.entries;
     }
-    // A one-line JSONL file is also a valid JSON document holding a single entry.
-    if (typeof d.value === "string") return [d];
   }
   throw new ImportError("wrong-format");
 }
 
 /**
- * Reads JSON Lines: one entry object or one string per line. Blank lines are skipped.
- * A line that is not valid JSON counts as an invalid item rather than failing the file.
- */
-function itemsFromJsonl(text: string): unknown[] {
-  const items: unknown[] = [];
-  let parsed = 0;
-  for (const line of text.split(/\r?\n/)) {
-    if (!line.trim()) continue;
-    try {
-      items.push(JSON.parse(line));
-      parsed++;
-    } catch {
-      items.push(undefined);
-    }
-  }
-  if (parsed === 0) throw new ImportError("not-json");
-  return items;
-}
-
-/**
- * Reads an import file in either format, detected from the content:
- * - JSON Lines (.jsonl), one entry object or string per line, as the options page exports;
- * - JSON: the older export format, a bare array of entry objects, or a bare array of
- *   strings (each a domain, URL, wildcard, or /regex/).
- * Throws ImportError when the file as a whole is unusable; individual bad items are
- * reported in `invalid`.
+ * Reads an import file: the export format, a bare array of entry objects, or a bare
+ * array of strings (each a domain, URL, wildcard, or /regex/). Throws ImportError when
+ * the file as a whole is unusable; individual bad items are reported in `invalid`.
  */
 export function parseImport(text: string, now = new Date().toISOString()): ParseResult {
   if (new TextEncoder().encode(text).length > MAX_IMPORT_BYTES) {
     throw new ImportError("too-large");
   }
-  let items: unknown[];
   let data: unknown;
-  let isJson = true;
   try {
     data = JSON.parse(text);
   } catch {
-    isJson = false;
+    throw new ImportError("not-json");
   }
-  if (isJson) items = itemsFromJson(data);
-  else items = itemsFromJsonl(text);
+  const items = itemsFromJson(data);
   if (items.length > MAX_ENTRIES) throw new ImportError("too-many");
 
   const entries: BlockEntry[] = [];

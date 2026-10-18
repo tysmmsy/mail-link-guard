@@ -36,7 +36,7 @@ export function Status({ message, kind }: { message: string; kind: "ok" | "error
     <p
       role="status"
       className={cn(
-        "min-h-[18px] text-[12px]",
+        "min-h-[22px] text-[14px]",
         kind === "error" && "text-alert",
         kind === "ok" && "text-ok",
       )}

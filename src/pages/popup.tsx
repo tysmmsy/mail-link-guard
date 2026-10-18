@@ -48,10 +48,10 @@ function Popup() {
           />
           {t("popupEnabled")}
         </Label>
-        <p id="status" className={active ? "text-[12px] text-ok" : "text-[12px]"}>
+        <p id="status" className={active ? "text-[14px] text-ok" : "text-[14px]"}>
           {t(active ? "popupActive" : "popupInactive")}
         </p>
-        <p id="count" className="text-[12px]">
+        <p id="count" className="text-[14px]">
           {t("popupBlockCount", settings.blocklist.length)}
         </p>
         <Button
