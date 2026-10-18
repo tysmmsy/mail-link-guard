@@ -128,7 +128,9 @@ const EMBEDDED_HOST = /(?:[\\/]{2}|\bhttps?:(?=[^\\/]))([^\s\\/?#&=]+\.[^\s\\/?#
  * first because browsers drop them from URLs ("/\t/evil.example" acts as "//evil.example").
  */
 export function embeddedTarget(url: URL): string | null {
-  const parts = [url.pathname.slice(1), url.search.slice(1), url.hash.slice(1)];
+  // The path keeps its leading "/", which with a following "/" (or a tab-split "/\t/")
+  // forms a protocol-relative URL at the start of the path.
+  const parts = [url.pathname, url.search.slice(1), url.hash.slice(1)];
   for (const raw of parts) {
     if (!raw) continue;
     // Decode twice to catch double encoding, as many redirectors decode again.
@@ -136,7 +138,8 @@ export function embeddedTarget(url: URL): string | null {
     const m = EMBEDDED_HOST.exec(text);
     if (!m) continue;
     const host = m[1].toLowerCase().replace(/\.$/, "");
-    if (!isSameOrSubdomain(host, url.hostname)) return host;
+    // Same site in either direction, ignoring "www.", is an in-site redirect.
+    if (!hostsRelated(host, url.hostname)) return host;
   }
   return null;
 }

@@ -109,12 +109,15 @@ describe("embeddedTarget", () => {
     assert.equal(target("https://a.test/r?to=https:evil.test"), "evil.test");
     assert.equal(target("https://a.test/go/https:%2F%2Fevil.test/x"), "evil.test");
     assert.equal(target("https://a.test/#//evil.test"), "evil.test");
+    assert.equal(target("https://a.test//evil.test/x"), "evil.test");
+    assert.equal(target("https://a.test/%09/evil.test"), "evil.test");
   });
 
   it("ignores ordinary queries and redirects within the same site", () => {
     assert.equal(target("https://a.test/news?id=1&ref=mail"), null);
     assert.equal(target("https://a.test/login?next=/dashboard"), null);
     assert.equal(target("https://a.test/r?to=https://www.a.test/x"), null);
+    assert.equal(target("https://www.a.test/r?to=https://a.test/x"), null);
     assert.equal(target("https://a.test/page#section-2"), null);
   });
 
