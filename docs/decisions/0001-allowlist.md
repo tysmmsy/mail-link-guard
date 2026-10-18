@@ -31,7 +31,7 @@ Keeping the allowlist at all was weighed too. It does nothing until someone adds
 | D-5 | The blocklist always wins | Opening a destination that is both allowed and blocked |
 | D-6 | Any note (text mismatch, Punycode, IP address, `@`, HTTP, shared host, shortener) shows the dialog | Links that disguise themselves |
 | D-7 | Anything other than HTTPS on the default port shows the dialog | Unencrypted connections and unusual ports |
-| D-8 | Any query (`?…`) or fragment (`#…`), or a path that holds a backslash, `:`, `@` or `//` (after decoding twice and dropping tab/CR/LF), shows the dialog whatever it holds; a site the URL appears to forward to is named in a note | Gap 2 (redirects) |
+| D-8 | Any query (`?…`) or fragment (`#…`), or a path that holds a backslash, `:`, `@` or `//` (after decoding twice and dropping tab/CR/LF; a path that cannot be decoded counts too), shows the dialog whatever it holds; a site the URL appears to forward to is named in a note | Gap 2 (redirects) |
 | D-9 | The check uses the destination after removing redirect wrappers (Google, Safe Links) | Wrappers used as disguise |
 | D-10 | Users cannot add shared-hosting sites (`SHARED_HOSTING`) or URL shorteners, nor include subdomains that would cover one | Gap 1 (shared hosting) |
 | D-11 | An organization's policy may allow its own tenant on a shared host (e.g. `contoso.sharepoint.com`) | Blocking legitimate organizational use |
