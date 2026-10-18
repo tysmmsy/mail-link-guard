@@ -136,6 +136,22 @@ export const DEFAULT_PATTERNS: readonly { value: string; noteKey: MessageKey }[]
     value: `^https?://(?:[^/.:]*\\.)*(?=[^/.:]*[${LATIN_LOOKALIKES}])[${LATIN_LOOKALIKES}0-9-]{2,}(?=[/.:]|$)`,
     noteKey: "defaultLookalikeNote",
   },
+  {
+    // Text before "@" in the host part, e.g. "https://paypal.com@evil.test/". Browsers go
+    // to the host after "@"; legitimate mail links practically never carry credentials.
+    value: "^https?://[^/?#]*@",
+    noteKey: "defaultCredentialsNote",
+  },
+  {
+    // A bare IP address instead of a domain name (IPv4, or IPv6 in brackets).
+    value: "^https?://(?:\\d{1,3}(?:\\.\\d{1,3}){3}|\\[[0-9a-f:.]+\\])(?=[/:?#]|$)",
+    noteKey: "defaultIpNote",
+  },
+  {
+    // The .zip and .mov top-level domains, which read like file names ("invoice.zip").
+    value: "^https?://[^/?#]+\\.(?:zip|mov)(?=[/:?#]|$)",
+    noteKey: "defaultFileTldNote",
+  },
 ];
 
 export function defaultEntries(
