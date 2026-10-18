@@ -9,7 +9,13 @@ export function t(key: MessageKey, ...subs: (string | number)[]): string {
     const message = (locales[__E2E_LANG__] ?? locales.en)[key];
     return subs.reduce<string>((m, sub, i) => m.replaceAll(`$${i + 1}`, String(sub)), message);
   }
-  return chrome.i18n.getMessage(key, subs.map(String)) || key;
+  try {
+    return chrome.i18n.getMessage(key, subs.map(String)) || key;
+  } catch {
+    // The extension was updated while this page stayed open, so chrome.i18n is gone.
+    // Showing the key keeps the dialog usable instead of throwing.
+    return key;
+  }
 }
 
 /**

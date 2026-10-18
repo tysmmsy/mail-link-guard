@@ -82,7 +82,12 @@ function start(): void {
           : (type, note) => addBlock(analysis, type, note),
       isEnforced: (entry) => settings?.isEnforced(entry) ?? false,
       openSettings: () => {
-        chrome.runtime.sendMessage({ type: "open-options" }).catch(() => {});
+        try {
+          chrome.runtime.sendMessage({ type: "open-options" }).catch(() => {});
+        } catch {
+          // Thrown synchronously when the extension was updated while the dialog was open.
+          showReloadNotice();
+        }
       },
     });
   };
