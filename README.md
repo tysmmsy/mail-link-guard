@@ -61,17 +61,26 @@ The 10,000-entry limit keeps the list well inside the 10 MB that `chrome.storage
 
 ### Default entries
 
-A new install starts with three entries that follow "block when in doubt". Each one targets domains written to be mistaken for Latin text, and you can remove any of them like other entries:
+A new install starts with six entries that follow "block when in doubt". You can remove any of them like other entries:
 
 | Catches | Examples |
 |---|---|
 | Domains that imitate "amazon" using Greek letters | `αmazon.co.jp`, `amazοn.com` |
 | A domain label that mixes Latin letters with Greek or Cyrillic | `pаypal.com` (Cyrillic а), `gοogle.com` (Greek ο) |
 | A domain label written only with Greek or Cyrillic letters that look Latin | `аррӏе.com` (reads as "apple", contains no Latin) |
+| Text before `@` in the address; the browser goes to the host after `@` | `https://paypal.com@evil.example/` |
+| A bare IP address instead of a domain name | `http://192.0.2.10/login` |
+| The `.zip` and `.mov` top-level domains, which read like file names | `https://invoice.zip/` |
 
-Ordinary Russian, Greek, Japanese or accented domains (`яндекс.рф`, `αλφα.gr`, `例え.jp`, `café.fr`) are not affected, because they do not mix scripts and contain letters that do not look Latin. The exact regular expressions are in `DEFAULT_PATTERNS` in [src/core/blocklist.ts](src/core/blocklist.ts).
+Ordinary Russian, Greek, Japanese or accented domains (`яндекс.рф`, `αλφα.gr`, `例え.jp`, `café.fr`) are not affected, because they do not mix scripts and contain letters that do not look Latin. Links to files such as `https://example.com/v1.zip` are not affected either. Links to internal systems by IP address are blocked; remove that entry if you need them. The exact regular expressions are in `DEFAULT_PATTERNS` in [src/core/blocklist.ts](src/core/blocklist.ts).
 
 They are added only on the first install, so an entry you removed does not come back with an update.
+
+To block every domain that contains any Greek or Cyrillic letter, add this regular expression. It is not a default because it also blocks ordinary Russian, Ukrainian, Greek and other sites (such as `яндекс.рф`), while the defaults already catch domains that use these letters to look Latin.
+
+```text
+^https?://[^/?#]*[\u0370-\u03ff\u0400-\u052f]
+```
 
 A regular expression runs on every click in a message, and a badly written one (nested repetition such as `(a+)+`) can take a long time on some URLs. The URL is cut to 4,096 characters before testing, but prefer simple patterns, and review regular expressions in files you import from others.
 

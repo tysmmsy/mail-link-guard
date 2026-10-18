@@ -222,6 +222,25 @@ describe("defaultEntries", () => {
     assert.ok(blocked(domainToASCII("www.ехро.com")));
   });
 
+  it("blocks credentials in the URL, IP-address hosts and .zip/.mov domains", () => {
+    assert.ok(blocked("paypal.com@evil.test"));
+    assert.ok(blocked("192.168.0.1"));
+    assert.ok(blocked("[::1]"));
+    assert.ok(blocked("invoice.zip"));
+    assert.ok(blocked("trailer.mov"));
+  });
+
+  it("leaves file links, e-mail-like queries and ordinary hosts alone", () => {
+    const ok = (href: string) =>
+      findBlock(
+        defaultEntries(NOW, (key) => en[key]),
+        new URL(href),
+      ) === null;
+    assert.ok(ok("https://github.com/a/b/releases/v1.zip"));
+    assert.ok(ok("https://example.com/unsubscribe?email=a@b.example"));
+    assert.ok(ok("https://www.amazon.co.jp/"));
+  });
+
   it("leaves ordinary Russian, Greek, Japanese and accented domains alone", () => {
     for (const host of ["пример.рф", "яндекс.рф", "αλφα.gr", "例え.jp", "bücher.de", "café.fr"]) {
       assert.equal(blocked(domainToASCII(host)), false, host);

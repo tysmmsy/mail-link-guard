@@ -56,6 +56,10 @@ export const en = {
     "Domains that mix Latin letters with Greek or Cyrillic in one word (added by default)",
   defaultLookalikeNote:
     "Domains written only with Greek or Cyrillic letters that look Latin, such as аррӏе (added by default)",
+  defaultCredentialsNote: 'URLs with text before "@" in the address (added by default)',
+  defaultIpNote: "Links to an IP address instead of a domain (added by default)",
+  defaultFileTldNote:
+    "Domains ending in .zip or .mov, which look like file names (added by default)",
 
   popupEnabled: "Check links",
   popupActive: "Links on this page are checked.",
@@ -176,6 +180,9 @@ export const ja: Record<MessageKey, string> = {
   defaultMixedScriptNote: "ラテン文字にギリシャ文字やキリル文字を混ぜたドメイン（初期登録）",
   defaultLookalikeNote:
     "ラテン文字に見えるギリシャ文字やキリル文字だけのドメイン（例: аррӏе）（初期登録）",
+  defaultCredentialsNote: "アドレスに「@」の前の文字を含むURL（初期登録）",
+  defaultIpNote: "ドメインではなくIPアドレスへのリンク（初期登録）",
+  defaultFileTldNote: "ファイル名に見える.zipと.movのドメイン（初期登録）",
 
   popupEnabled: "リンクを確認する",
   popupActive: "このページを確認しています。",
@@ -290,6 +297,9 @@ export const zh_CN: Record<MessageKey, string> = {
   defaultAmazonNote: "用希腊字母冒充 Amazon 的域名（预设条目）",
   defaultMixedScriptNote: "在同一个词中混用拉丁字母与希腊字母或西里尔字母的域名（预设条目）",
   defaultLookalikeNote: "仅用看似拉丁字母的希腊字母或西里尔字母书写的域名，例如 аррӏе（预设条目）",
+  defaultCredentialsNote: "地址中“@”前带有文字的 URL（默认添加）",
+  defaultIpNote: "指向 IP 地址而非域名的链接（默认添加）",
+  defaultFileTldNote: "看起来像文件名的 .zip 和 .mov 域名（默认添加）",
   popupEnabled: "检查链接",
   popupActive: "此页面上的链接会受到检查。",
   popupInactive: "不检查此页面。",
@@ -401,6 +411,9 @@ export const zh_TW: Record<MessageKey, string> = {
   defaultAmazonNote: "以希臘字母仿冒 Amazon 的網域（預設項目）",
   defaultMixedScriptNote: "在同一個字詞中混用拉丁字母與希臘或西里爾字母的網域（預設項目）",
   defaultLookalikeNote: "只用外觀像拉丁字母的希臘或西里爾字母寫成的網域，例如 аррӏе（預設項目）",
+  defaultCredentialsNote: "網址中「@」前帶有文字的 URL（預設新增）",
+  defaultIpNote: "指向 IP 位址而非網域的連結（預設新增）",
+  defaultFileTldNote: "看起來像檔名的 .zip 和 .mov 網域（預設新增）",
   popupEnabled: "檢查連結",
   popupActive: "這個網頁上的連結會受到檢查。",
   popupInactive: "不會檢查這個網頁。",
@@ -522,6 +535,9 @@ export const ko: Record<MessageKey, string> = {
     "한 단어 안에 라틴 문자와 그리스 문자 또는 키릴 문자가 섞인 도메인(기본 항목)",
   defaultLookalikeNote:
     "аррӏе처럼 라틴 문자로 보이는 그리스 문자 또는 키릴 문자로만 쓰인 도메인(기본 항목)",
+  defaultCredentialsNote: '주소에 "@" 앞 문자가 있는 URL(기본 추가)',
+  defaultIpNote: "도메인 대신 IP 주소로 가는 링크(기본 추가)",
+  defaultFileTldNote: "파일 이름처럼 보이는 .zip, .mov 도메인(기본 추가)",
   popupEnabled: "링크 확인",
   popupActive: "이 페이지의 링크를 확인합니다.",
   popupInactive: "이 페이지는 확인하지 않습니다.",
@@ -647,6 +663,9 @@ export const es: Record<MessageKey, string> = {
     "Dominios que mezclan letras latinas con griegas o cirílicas en una misma palabra (predeterminado)",
   defaultLookalikeNote:
     "Dominios escritos solo con letras griegas o cirílicas que parecen latinas, como аррӏе (predeterminado)",
+  defaultCredentialsNote: 'URL con texto antes de "@" en la dirección (añadido por defecto)',
+  defaultIpNote: "Enlaces a una dirección IP en lugar de un dominio (añadido por defecto)",
+  defaultFileTldNote: "Dominios .zip y .mov, que parecen nombres de archivo (añadido por defecto)",
   popupEnabled: "Comprobar enlaces",
   popupActive: "Se comprueban los enlaces de esta página.",
   popupInactive: "Esta página no se comprueba.",
@@ -772,6 +791,9 @@ export const pt_BR: Record<MessageKey, string> = {
     "Domínios que misturam letras latinas com gregas ou cirílicas na mesma palavra (padrão)",
   defaultLookalikeNote:
     "Domínios escritos só com letras gregas ou cirílicas que parecem latinas, como аррӏе (padrão)",
+  defaultCredentialsNote: 'URLs com texto antes de "@" no endereço (adicionado por padrão)',
+  defaultIpNote: "Links para um endereço IP em vez de um domínio (adicionado por padrão)",
+  defaultFileTldNote: "Domínios .zip e .mov, que parecem nomes de arquivo (adicionado por padrão)",
   popupEnabled: "Verificar links",
   popupActive: "Os links desta página são verificados.",
   popupInactive: "Esta página não é verificada.",
@@ -900,6 +922,10 @@ export const fr: Record<MessageKey, string> = {
     "Domaines mêlant lettres latines et lettres grecques ou cyrilliques dans un même mot (par défaut)",
   defaultLookalikeNote:
     "Domaines écrits uniquement avec des lettres grecques ou cyrilliques ressemblant à des lettres latines, comme аррӏе (par défaut)",
+  defaultCredentialsNote: "URL avec du texte avant « @ » dans l'adresse (ajouté par défaut)",
+  defaultIpNote: "Liens vers une adresse IP au lieu d'un domaine (ajouté par défaut)",
+  defaultFileTldNote:
+    "Domaines .zip et .mov, qui ressemblent à des noms de fichier (ajouté par défaut)",
   popupEnabled: "Vérifier les liens",
   popupActive: "Les liens de cette page sont vérifiés.",
   popupInactive: "Cette page n'est pas vérifiée.",
@@ -1027,6 +1053,10 @@ export const de: Record<MessageKey, string> = {
     "Domains, die in einem Wort lateinische mit griechischen oder kyrillischen Buchstaben mischen (Standardeintrag)",
   defaultLookalikeNote:
     "Domains nur aus griechischen oder kyrillischen Buchstaben, die lateinisch aussehen, z. B. аррӏе (Standardeintrag)",
+  defaultCredentialsNote: "URLs mit Text vor „@“ in der Adresse (standardmäßig hinzugefügt)",
+  defaultIpNote: "Links zu einer IP-Adresse statt einer Domain (standardmäßig hinzugefügt)",
+  defaultFileTldNote:
+    ".zip- und .mov-Domains, die wie Dateinamen aussehen (standardmäßig hinzugefügt)",
   popupEnabled: "Links prüfen",
   popupActive: "Links auf dieser Seite werden geprüft.",
   popupInactive: "Diese Seite wird nicht geprüft.",
@@ -1156,6 +1186,12 @@ export const it: Record<MessageKey, string> = {
     "Domini che mescolano lettere latine con lettere greche o cirilliche nella stessa parola (voce predefinita)",
   defaultLookalikeNote:
     "Domini scritti solo con lettere greche o cirilliche che sembrano latine, come аррӏе (voce predefinita)",
+  defaultCredentialsNote:
+    'URL con testo prima di "@" nell\'indirizzo (aggiunto per impostazione predefinita)',
+  defaultIpNote:
+    "Link a un indirizzo IP invece che a un dominio (aggiunto per impostazione predefinita)",
+  defaultFileTldNote:
+    "Domini .zip e .mov, che sembrano nomi di file (aggiunto per impostazione predefinita)",
   popupEnabled: "Controlla i link",
   popupActive: "I link di questa pagina vengono controllati.",
   popupInactive: "Questa pagina non viene controllata.",
@@ -1281,6 +1317,9 @@ export const ru: Record<MessageKey, string> = {
     "Домены, где в одном слове латинские буквы смешаны с греческими или кириллическими (предустановленная запись)",
   defaultLookalikeNote:
     "Домены только из греческих или кириллических букв, похожих на латинские, например аррӏе (предустановленная запись)",
+  defaultCredentialsNote: "URL с текстом перед «@» в адресе (добавлено по умолчанию)",
+  defaultIpNote: "Ссылки на IP-адрес вместо домена (добавлено по умолчанию)",
+  defaultFileTldNote: "Домены .zip и .mov, похожие на имена файлов (добавлено по умолчанию)",
   popupEnabled: "Проверять ссылки",
   popupActive: "Ссылки на этой странице проверяются.",
   popupInactive: "Эта страница не проверяется.",

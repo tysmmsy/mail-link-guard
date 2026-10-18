@@ -15,7 +15,7 @@
 | `allowUserBlocklist` | 真偽値 | `false`にすると、利用者が自分で登録した項目を無視し、追加とインポートもできなくします。`enforcedBlocklist`だけが適用されます。既定は`true`です。 |
 
 スキーマは[static/managed_schema.json](../static/managed_schema.json)です。
-初期登録の3件は利用者のリストに入るため、`allowUserBlocklist`を`false`にすると効かなくなります。
+初期登録の6件は利用者のリストに入るため、`allowUserBlocklist`を`false`にすると効かなくなります。
 残す場合は、`DEFAULT_PATTERNS`の値を`enforcedBlocklist`に加えてください。
 
 管理者がブロックした行き先のリンクをクリックすると、「組織の管理者がブロックしています」と表示し、開けません。

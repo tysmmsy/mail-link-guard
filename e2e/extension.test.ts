@@ -79,7 +79,7 @@ describe("first install", () => {
       await new Promise((r) => setTimeout(r, 100));
       list = await getBlocklist();
     }
-    assert.equal(list.length, 3);
+    assert.equal(list.length, 6);
     assert.ok(list.every((e) => e.type === "regex"));
     const page = await openGmail();
     await page.click("#greek");
