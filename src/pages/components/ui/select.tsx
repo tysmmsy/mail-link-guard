@@ -30,7 +30,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "mac-button min-w-[96px] justify-between gap-2 rounded-[3px] pr-1 pl-2 outline-none disabled:cursor-not-allowed data-[size=sm]:h-[20px] *:data-[slot=select-value]:line-clamp-1 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "mac-button min-w-[96px] justify-between gap-2 rounded-[3px] pr-1 pl-2 outline-none disabled:cursor-not-allowed data-[size=sm]:h-[24px] *:data-[slot=select-value]:line-clamp-1 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ function SelectLabel({ className, ...props }: React.ComponentProps<typeof Select
   return (
     <SelectPrimitive.Label
       data-slot="select-label"
-      className={cn("px-2 py-1 text-[12px] text-platinum-shadow", className)}
+      className={cn("px-2 py-1 text-[14px] text-platinum-shadow", className)}
       {...props}
     />
   );
@@ -99,7 +99,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center gap-2 py-[2px] pr-2 pl-6 text-[13px] outline-hidden select-none focus:bg-[#333399] focus:text-paper data-[disabled]:pointer-events-none data-[disabled]:text-platinum-dark [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "relative flex w-full cursor-default items-center gap-2 py-[2px] pr-2 pl-6 text-[16px] outline-hidden select-none focus:bg-[#333399] focus:text-paper data-[disabled]:pointer-events-none data-[disabled]:text-platinum-dark [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       {...props}

@@ -10,7 +10,7 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer mt-[2px] size-[13px] shrink-0 border border-ink bg-paper text-ink shadow-[inset_1px_1px_0_var(--color-platinum-dark)] outline-none disabled:cursor-not-allowed disabled:border-platinum-dark",
+        "peer mt-[2px] size-[15px] shrink-0 border border-ink bg-paper text-ink shadow-[inset_1px_1px_0_var(--color-platinum-dark)] outline-none disabled:cursor-not-allowed disabled:border-platinum-dark",
         className,
       )}
       {...props}
@@ -19,7 +19,7 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
         data-slot="checkbox-indicator"
         className="grid place-content-center text-current"
       >
-        <CheckIcon className="size-[11px]" strokeWidth={4} />
+        <CheckIcon className="size-[13px]" strokeWidth={4} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

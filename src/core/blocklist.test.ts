@@ -13,8 +13,7 @@ import {
   mergeEntries,
   normalizeValue,
   parseImport,
-  toJsonl,
-  toPolicyJson,
+  toExportJson,
 } from "./blocklist.ts";
 
 const NOW = "2026-10-18T00:00:00.000Z";
@@ -76,52 +75,12 @@ describe("mergeEntries", () => {
 });
 
 describe("import/export", () => {
-  it("round-trips JSONL, one entry per line", () => {
+  it("round-trips the export file, written one entry per line", () => {
     const list = [entry("domain", "evil.test"), entry("wildcard", "*.amaz0n.*")];
-    const jsonl = toJsonl(list);
-    assert.equal(jsonl.split("\n").filter(Boolean).length, 2);
-    assert.deepEqual(parseImport(jsonl, NOW), { entries: list, invalid: [] });
-  });
-
-  it("reads hand-written JSONL with blank lines, strings and a broken line", () => {
-    const text = [
-      '{"type":"domain","value":"evil.test","note":"reported"}',
-      "",
-      '"*.amaz0n.*"',
-      "{broken",
-      '{"type":"regex","value":"paypa[l1]"}',
-    ].join("\r\n");
-    const r = parseImport(text, NOW);
-    assert.deepEqual(
-      r.entries.map((e) => [e.type, e.value, e.note]),
-      [
-        ["domain", "evil.test", "reported"],
-        ["wildcard", "*.amaz0n.*", ""],
-        ["regex", "paypa[l1]", ""],
-      ],
-    );
-    assert.equal(r.invalid.length, 1);
-  });
-
-  it("reads a one-line JSONL file", () => {
-    const r = parseImport('{"type":"domain","value":"evil.test"}\n', NOW);
-    assert.deepEqual(
-      r.entries.map((e) => e.value),
-      ["evil.test"],
-    );
-  });
-
-  it("still reads the older JSON export format", () => {
-    const list = [entry("domain", "evil.test"), entry("url", "https://x.test/a")];
-    const json = JSON.stringify({ format: "mail-link-guard/blocklist", version: 1, entries: list });
+    const json = toExportJson(list, new Date(NOW));
+    assert.equal(json.split("\n").filter((l) => l.includes('"type"')).length, 2);
     assert.deepEqual(parseImport(json, NOW), { entries: list, invalid: [] });
-  });
-
-  it("writes policy JSON for the Google Admin console", () => {
-    const policy = JSON.parse(toPolicyJson([{ ...entry("domain", "evil.test"), note: "x" }]));
-    assert.deepEqual(policy, {
-      enforcedBlocklist: { Value: [{ type: "domain", value: "evil.test", note: "x" }] },
-    });
+    assert.deepEqual(parseImport(toExportJson([], new Date(NOW)), NOW).entries, []);
   });
 
   it("accepts a bare array of strings and guesses the type", () => {
@@ -172,7 +131,6 @@ describe("import/export", () => {
       }
     };
     assert.equal(code("{"), "not-json");
-    assert.equal(code("not json\nat all"), "not-json");
     assert.equal(code('{"a":1}'), "wrong-format");
     assert.equal(code('{"format":"other","entries":[]}'), "wrong-format");
     assert.equal(
