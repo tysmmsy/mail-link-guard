@@ -35,7 +35,8 @@ import {
   mergeEntries,
   parseImport,
   removeEntry,
-  toExport,
+  toJsonl,
+  toPolicyJson,
 } from "../core/blocklist.ts";
 import { localizePage, t } from "../core/i18n.ts";
 import { loadSettings, saveSettings } from "../core/settings.ts";
@@ -277,15 +278,18 @@ function ImportExportGroup({ entries, allowed }: { entries: BlockEntry[]; allowe
     setStatus({ message: `${t("optImported", result.added)}${detail}`, kind: "ok" });
   };
 
-  const exportFile = () => {
-    const json = `${JSON.stringify(toExport(entries), null, 2)}\n`;
-    const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+  const download = (text: string, type: string, name: string) => {
+    const url = URL.createObjectURL(new Blob([text], { type }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `mail-link-guard-blocklist-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = name.replace("{date}", new Date().toISOString().slice(0, 10));
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
+  const exportJsonl = () =>
+    download(toJsonl(entries), "application/jsonl", "mail-link-guard-blocklist-{date}.jsonl");
+  const exportPolicy = () =>
+    download(toPolicyJson(entries), "application/json", "mail-link-guard-policy-{date}.json");
 
   return (
     <Group title={t("optImportExport")}>
@@ -304,14 +308,17 @@ function ImportExportGroup({ entries, allowed }: { entries: BlockEntry[]; allowe
         <Button id="import-button" disabled={!allowed} onClick={() => fileRef.current?.click()}>
           {t("btnImport")}
         </Button>
-        <Button id="export-button" onClick={exportFile}>
+        <Button id="export-button" onClick={exportJsonl}>
           {t("btnExport")}
+        </Button>
+        <Button id="export-policy-button" onClick={exportPolicy}>
+          {t("btnExportPolicy")}
         </Button>
         <input
           ref={fileRef}
           id="import-file"
           type="file"
-          accept="application/json,.json"
+          accept=".jsonl,.json,application/json,application/jsonl,application/x-ndjson"
           hidden
           onChange={(e) => {
             const file = e.target.files?.[0];
