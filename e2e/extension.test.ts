@@ -300,7 +300,8 @@ describe("options page", () => {
   it("shows the version and open source links, and ships the license", async () => {
     const page = await context.newPage();
     await page.goto(`chrome-extension://${extensionId}/options.html`);
-    assert.match((await page.locator("#version").textContent()) ?? "", /0\.1\.0/);
+    const { version } = JSON.parse(await readFile(join(dist, "manifest.json"), "utf8"));
+    assert.ok(((await page.locator("#version").textContent()) ?? "").includes(version));
     const hrefs = await page
       .locator("ul.links a")
       .evaluateAll((as) => as.map((a) => a.getAttribute("href")));
