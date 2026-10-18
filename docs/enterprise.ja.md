@@ -23,7 +23,7 @@
 ## 拡張機能のID
 
 ポリシーは拡張機能のIDに結び付きます。
-Chrome Web StoreのIDを使ってください。
+Chrome Web StoreのIDは`mofhdbekklmpogblinkohjliliopgkog`で、以下の例もこのIDで書いています。
 手元で読み込んだ版のIDはフォルダの場所で決まるため、1台での試験にしか使えません。
 
 ## Google管理コンソール
@@ -61,7 +61,7 @@ pnpm policy blocklist.json > policy.json
 ```reg
 Windows Registry Editor Version 5.00
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\<拡張機能のID>\policy]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\mofhdbekklmpogblinkohjliliopgkog\policy]
 "enforcedEnabled"=dword:00000001
 "allowUserBlocklist"=dword:00000001
 "enforcedBlocklist"="[{\"type\":\"domain\",\"value\":\"known-phishing.example\",\"note\":\"情報システム部が登録\"}]"
@@ -72,7 +72,7 @@ Windows Registry Editor Version 5.00
 
 ## macOS（構成プロファイル）
 
-ドメイン`com.google.Chrome.extensions.<拡張機能のID>`の管理対象の環境設定として配布します。
+ドメイン`com.google.Chrome.extensions.mofhdbekklmpogblinkohjliliopgkog`の管理対象の環境設定として配布します。
 
 ```xml
 <key>enforcedEnabled</key>
