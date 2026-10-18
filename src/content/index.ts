@@ -1,6 +1,7 @@
 // Content script for Gmail: intercepts link clicks, then either blocks the link
 // (blocklist hit) or asks the user to confirm the real destination (message body links).
 
+import { allowedToSkip } from "../core/allowlist.ts";
 import {
   type BlockEntry,
   type CompiledBlocklist,
@@ -110,6 +111,9 @@ function start(): void {
 
     const block = blockFor(analysis);
     if (!block && !anchor.closest(BODY_SELECTOR)) return;
+    // Allowlisted sites open without the dialog, but only when nothing about the link
+    // is suspicious (see allowedToSkip). A blocklist hit has already taken precedence.
+    if (!block && allowedToSkip(settings.allowlist, analysis)) return;
 
     e.preventDefault();
     e.stopImmediatePropagation();

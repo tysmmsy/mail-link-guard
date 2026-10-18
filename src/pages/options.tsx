@@ -25,6 +25,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  type AllowEntry,
+  type AllowError,
+  allowKey,
+  MAX_ALLOW_ENTRIES,
+  makeAllowEntry,
+} from "../core/allowlist.ts";
+import {
   type BlockEntry,
   ENTRY_TYPES,
   type EntryType,
@@ -119,11 +126,165 @@ function EntriesTable({
   );
 }
 
-function ManagedGroup({ entries }: { entries: BlockEntry[] }) {
+function AllowTable({
+  id,
+  entries,
+  onRemove,
+}: {
+  id: string;
+  entries: AllowEntry[];
+  onRemove?: (entry: AllowEntry) => void;
+}) {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{t("optColValue")}</TableHead>
+          <TableHead className="w-[160px]">{t("optColScope")}</TableHead>
+          <TableHead>{t("optColNote")}</TableHead>
+          <TableHead className="w-[96px]">{t("optColAdded")}</TableHead>
+          <TableHead className="w-[88px]" />
+        </TableRow>
+      </TableHeader>
+      <TableBody id={id}>
+        {entries.map((entry) => (
+          <TableRow key={allowKey(entry)}>
+            <TableCell className="font-mono break-all">{entry.host}</TableCell>
+            <TableCell className="whitespace-nowrap">
+              {t(entry.includeSubdomains ? "scopeSubdomains" : "scopeExact")}
+            </TableCell>
+            <TableCell className="break-words">{entry.note}</TableCell>
+            <TableCell className="whitespace-nowrap">{formatDate(entry.addedAt)}</TableCell>
+            <TableCell className="text-right">
+              {onRemove && (
+                <Button size="sm" variant="destructive" onClick={() => onRemove(entry)}>
+                  {t("btnRemove")}
+                </Button>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
+function ManagedGroup({
+  blocklist,
+  allowlist,
+}: {
+  blocklist: BlockEntry[];
+  allowlist: AllowEntry[];
+}) {
   return (
     <Group title={t("optManaged")}>
       <p className="mb-2 text-[14px]">{t("optManagedHelp")}</p>
-      <EntriesTable id="managed-rows" entries={entries} />
+      {blocklist.length > 0 && <EntriesTable id="managed-rows" entries={blocklist} />}
+      {allowlist.length > 0 && (
+        <>
+          <h3 className="mt-3 mb-1 text-[14px] font-bold">{t("optManagedAllowlist")}</h3>
+          <AllowTable id="managed-allow-rows" entries={allowlist} />
+        </>
+      )}
+    </Group>
+  );
+}
+
+const allowErrors: Record<AllowError, MessageKey> = {
+  invalid: "optAllowInvalid",
+  "shared-host": "optAllowShared",
+  "shared-parent": "optAllowSharedParent",
+};
+
+/**
+ * The allowlist can be edited only here, never from the in-page dialog: allowing a site
+ * should be a deliberate choice, not a click made while looking at a suspicious link.
+ */
+function AllowlistGroup({ entries, allowed }: { entries: AllowEntry[]; allowed: boolean }) {
+  const [host, setHost] = useState("");
+  const [subdomains, setSubdomains] = useState(false);
+  const [note, setNote] = useState("");
+  const [status, setStatus] = useState<StatusState>(clear);
+
+  const add = async (e: FormEvent) => {
+    e.preventDefault();
+    const r = makeAllowEntry(host, subdomains, note, new Date().toISOString());
+    if ("error" in r) {
+      setStatus({ message: t(allowErrors[r.error], r.detail ?? ""), kind: "error" });
+      return;
+    }
+    const latest = await loadSettings();
+    if (latest.allowlist.some((x) => allowKey(x) === allowKey(r.entry))) {
+      setStatus({ message: t("optDuplicate"), kind: "error" });
+      return;
+    }
+    if (latest.allowlist.length >= MAX_ALLOW_ENTRIES) {
+      setStatus({ message: t("optTooMany", MAX_ALLOW_ENTRIES), kind: "error" });
+      return;
+    }
+    await saveSettings({ allowlist: [...latest.allowlist, r.entry] });
+    setHost("");
+    setNote("");
+    setSubdomains(false);
+    setStatus(clear);
+  };
+
+  const remove = async (entry: AllowEntry) => {
+    const latest = await loadSettings();
+    await saveSettings({
+      allowlist: latest.allowlist.filter((x) => allowKey(x) !== allowKey(entry)),
+    });
+  };
+
+  return (
+    <Group title={t("optAllowlist")}>
+      <p className="mb-2 text-[14px]">{t("optAllowlistHelp")}</p>
+      {!allowed && (
+        <p id="user-allowlist-disabled" className="mb-2 text-[14px] text-alert">
+          {t("optAllowUserDisabled")}
+        </p>
+      )}
+      <fieldset disabled={!allowed} className="contents">
+        <form id="allow-form" onSubmit={add} className="flex flex-wrap items-center gap-2">
+          <Input
+            id="allow-host"
+            className="w-auto flex-[3_1_220px]"
+            placeholder={t("optHostPlaceholder")}
+            value={host}
+            onChange={(e) => setHost(e.target.value)}
+            autoComplete="off"
+          />
+          <Input
+            id="allow-note"
+            className="w-auto flex-[1_1_140px]"
+            placeholder={t("optNotePlaceholder")}
+            maxLength={200}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            autoComplete="off"
+          />
+          <Button type="submit" variant="default">
+            {t("btnAdd")}
+          </Button>
+          <Label className="basis-full">
+            <Checkbox
+              id="allow-subdomains"
+              checked={subdomains}
+              onCheckedChange={(v) => setSubdomains(v === true)}
+            />
+            {t("optIncludeSubdomains")}
+          </Label>
+        </form>
+      </fieldset>
+      <div id="allow-status">
+        <Status {...status} />
+      </div>
+      <AllowTable
+        id="allow-rows"
+        entries={[...entries].reverse()}
+        onRemove={allowed ? (entry) => void remove(entry) : undefined}
+      />
+      {entries.length === 0 && <p className="mt-2 text-[14px]">{t("optAllowlistEmpty")}</p>}
     </Group>
   );
 }
@@ -354,9 +515,12 @@ function Options() {
         )}
       </Group>
 
-      {policy.enforcedBlocklist.length > 0 && <ManagedGroup entries={policy.enforcedBlocklist} />}
+      {(policy.enforcedBlocklist.length > 0 || policy.enforcedAllowlist.length > 0) && (
+        <ManagedGroup blocklist={policy.enforcedBlocklist} allowlist={policy.enforcedAllowlist} />
+      )}
       <BlocklistGroup entries={settings.blocklist} allowed={policy.allowUserBlocklist} />
       <ImportExportGroup entries={settings.blocklist} allowed={policy.allowUserBlocklist} />
+      <AllowlistGroup entries={settings.allowlist} allowed={policy.allowUserAllowlist} />
 
       <Group title={t("optAbout")}>
         <p id="version" className="text-[14px]">

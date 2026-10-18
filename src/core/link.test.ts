@@ -47,6 +47,12 @@ describe("analyzeLink", () => {
     assert.deepEqual(notesOf("https://paypal.com@evil.test/"), ["credentials"]);
   });
 
+  it("warns about sites where anyone can publish pages", () => {
+    assert.deepEqual(notesOf("https://sites.google.com/view/account-check"), ["shared-host"]);
+    assert.deepEqual(notesOf("https://evil.github.io/login"), ["shared-host"]);
+    assert.deepEqual(notesOf("https://accounts.google.com/"), []);
+  });
+
   it("truncates long link text", () => {
     const a = analyzeLink("https://example.com/", "x".repeat(500));
     assert.equal(a?.text.length, 201);

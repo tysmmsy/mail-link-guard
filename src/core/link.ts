@@ -4,6 +4,10 @@
 
 import { hasPunycodeLabel, isIpHost, isSameOrSubdomain, matchesAnyDomain } from "./hosts.ts";
 import { toUnicodeHost } from "./punycode.ts";
+import { SHARED_HOSTING } from "./shared-hosting.ts";
+import { SHORTENER_DOMAINS } from "./shorteners.ts";
+
+export { SHORTENER_DOMAINS };
 
 export type NoteKind =
   | "text-mismatch"
@@ -11,7 +15,8 @@ export type NoteKind =
   | "ip-host"
   | "punycode"
   | "shortener"
-  | "credentials";
+  | "credentials"
+  | "shared-host";
 
 export interface LinkAnalysis {
   /** The href exactly as the browser resolved it from the anchor. */
@@ -30,26 +35,6 @@ export interface LinkAnalysis {
 }
 
 export type WrapperName = "google-redirect" | "outlook-safelinks";
-
-export const SHORTENER_DOMAINS: readonly string[] = [
-  "bit.ly",
-  "bitly.com",
-  "buff.ly",
-  "cutt.ly",
-  "goo.gl",
-  "is.gd",
-  "lnkd.in",
-  "ow.ly",
-  "rb.gy",
-  "rebrand.ly",
-  "shorturl.at",
-  "t.co",
-  "t.ly",
-  "tiny.cc",
-  "tinyurl.com",
-  "v.gd",
-  "x.gd",
-];
 
 const MAX_TEXT = 200;
 const MAX_UNWRAP_DEPTH = 3;
@@ -136,6 +121,7 @@ export function analyzeLink(rawHref: string, rawText: string, base?: string): Li
   if (isIpHost(host)) notes.push("ip-host");
   if (hasPunycodeLabel(host)) notes.push("punycode");
   if (matchesAnyDomain(host, SHORTENER_DOMAINS)) notes.push("shortener");
+  else if (matchesAnyDomain(host, SHARED_HOSTING)) notes.push("shared-host");
   if (destination.username || destination.password) notes.push("credentials");
 
   return {

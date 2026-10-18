@@ -1,17 +1,21 @@
 // Settings schema and chrome.storage.local access. Everything the extension keeps
 // lives in this one object on the user's device; nothing is synced or sent anywhere.
 
+import type { AllowEntry } from "./allowlist.ts";
 import type { BlockEntry } from "./blocklist.ts";
 
 export interface Settings {
   enabled: boolean;
   blocklist: BlockEntry[];
+  /** Sites whose links open without the dialog; edited only on the options page. */
+  allowlist: AllowEntry[];
 }
 
 export function defaultSettings(): Settings {
   return {
     enabled: true,
     blocklist: [],
+    allowlist: [],
   };
 }
 
@@ -21,6 +25,7 @@ export function withDefaults(stored: Partial<Settings>): Settings {
   return {
     enabled: typeof stored.enabled === "boolean" ? stored.enabled : base.enabled,
     blocklist: Array.isArray(stored.blocklist) ? stored.blocklist : base.blocklist,
+    allowlist: Array.isArray(stored.allowlist) ? stored.allowlist : base.allowlist,
   };
 }
 

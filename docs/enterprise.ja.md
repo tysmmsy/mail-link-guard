@@ -10,6 +10,8 @@
 |---|---|---|
 | `enforcedEnabled` | 真偽値 | `true`にすると、全員のリンクの確認とブロックを常にオンにします。`false`なら常にオフです。設定しなければ利用者が選べます。 |
 | `enforcedBlocklist` | `{ "type", "value", "note" }`の配列 | 全員に適用するブロックリストです。利用者の設定画面には「組織の設定」として表示され、削除できません。`type`は`domain`、`url`、`wildcard`、`regex`のいずれかで、書き方は設定画面と同じです。不正な項目は無視します。 |
+| `enforcedAllowlist` | `{ "host", "includeSubdomains", "note" }`の配列 | 全員に適用する許可リストです。ブロックリストが優先で、怪しいリンク（注意点がある、HTTPSでない、別のURLを含む）ではダイアログを出します。利用者の登録と違い、`contoso.sharepoint.com`のような自社のテナントも登録できます。 |
+| `allowUserAllowlist` | 真偽値 | `false`にすると、利用者が自分で許可したサイトを無視し、追加もできなくします。既定は`true`です。 |
 | `allowUserBlocklist` | 真偽値 | `false`にすると、利用者が自分で登録した項目を無視し、追加とインポートもできなくします。`enforcedBlocklist`だけが適用されます。既定は`true`です。 |
 
 スキーマは[static/managed_schema.json](../static/managed_schema.json)です。
