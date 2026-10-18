@@ -90,6 +90,10 @@
       inset 1px 1px 0 var(--color-paper),
       inset -1px -1px 0 var(--color-platinum-dark);
   }
+  /* Hover: the lavender tint Platinum used for highlighted controls. Instant, no transition. */
+  .mac-button:hover:not(:disabled) {
+    background-image: linear-gradient(var(--color-paper), #ccccee);
+  }
   .mac-button:active:not(:disabled) {
     background-image: none;
     background-color: var(--color-platinum-shadow);
