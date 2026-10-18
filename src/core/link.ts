@@ -2,7 +2,13 @@
 // redirect wrappers that mail services add) and lists neutral format notes for the
 // confirmation dialog. Kept free of DOM and chrome APIs so it is unit-testable.
 
-import { hasPunycodeLabel, isIpHost, isSameOrSubdomain, matchesAnyDomain } from "./hosts.ts";
+import {
+  hasPunycodeLabel,
+  isIpHost,
+  isSameOrSubdomain,
+  matchesAnyDomain,
+  normalizeHost,
+} from "./hosts.ts";
 import { toUnicodeHost } from "./punycode.ts";
 import { SHARED_HOSTING } from "./shared-hosting.ts";
 import { SHORTENER_DOMAINS } from "./shorteners.ts";
@@ -124,12 +130,20 @@ function decodeSafe(s: string): string {
 const EMBEDDED_AUTHORITY =
   /(?:[\\/]{2}|\bhttps?:[\\/]?(?=[^\\/]))(\[[0-9a-f:.]+\]|[^\s\\/?#&=]+)/gi;
 
-/** The host of an authority such as "user:pw@evil.example:8443", or null if it has no dot. */
+/**
+ * The host of an authority such as "user:pw@evil.example:8443", in the same ASCII
+ * (Punycode) form the URL parser gives the destination, or null if it is not a host.
+ */
 function hostOfAuthority(authority: string): string | null {
   if (authority.startsWith("[")) return authority.toLowerCase();
   const afterUserinfo = authority.slice(authority.lastIndexOf("@") + 1);
-  const host = afterUserinfo.replace(/:\d*$/, "").toLowerCase().replace(/\.$/, "");
-  return host.includes(".") ? host : null;
+  const raw = afterUserinfo.replace(/:\d*$/, "").replace(/\.$/, "");
+  if (!raw.includes(".") && !raw.includes("。")) return null;
+  try {
+    return normalizeHost(new URL(`https://${raw}/`).hostname);
+  } catch {
+    return null;
+  }
 }
 
 /**

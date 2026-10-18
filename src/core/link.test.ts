@@ -118,6 +118,7 @@ describe("embeddedTarget", () => {
     assert.equal(target("https://a.test/go/https:/evil.test/"), "evil.test");
     assert.equal(target("https://a.test/go/http:%5Cevil.test/"), "evil.test");
     assert.equal(target("https://a.test//[2001:db8::1]/x"), "[2001:db8::1]");
+    assert.equal(target("https://a.test/r?to=https://αmazon.co.jp/"), "xn--mazon-c9d.co.jp");
   });
 
   it("ignores ordinary queries and redirects within the same site", () => {
@@ -125,6 +126,8 @@ describe("embeddedTarget", () => {
     assert.equal(target("https://a.test/login?next=/dashboard"), null);
     assert.equal(target("https://a.test/r?to=https://www.a.test/x"), null);
     assert.equal(target("https://www.a.test/r?to=https://a.test/x"), null);
+    // An internationalized same-site host, written in Unicode in the query.
+    assert.equal(target("https://xn--r8jz45g.jp/r?to=https://例え.jp/x"), null);
     assert.equal(target("https://a.test/page#section-2"), null);
   });
 
