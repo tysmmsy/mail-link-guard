@@ -146,7 +146,11 @@ function start(): void {
   const retire = (e: MouseEvent) => {
     closeDialog();
     const anchor = anchorFrom(e);
-    if (anchor?.closest(BODY_SELECTOR) && analyzeLink(anchor.href, "")) {
+    const analysis = anchor ? analyzeLink(anchor.href, "") : null;
+    if (!anchor || !analysis) return;
+    // The compiled blocklist is plain code and still works without chrome.* access, so a
+    // blocked destination stays blocked anywhere on the page, not only in the body.
+    if (anchor.closest(BODY_SELECTOR) || blockFor(analysis)) {
       e.preventDefault();
       e.stopImmediatePropagation();
       showReloadNotice();

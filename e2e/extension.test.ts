@@ -350,6 +350,17 @@ describe("options page", () => {
 // Runs last: it reloads the extension, which leaves the running page with a stale script.
 describe("after the extension is reloaded", () => {
   it("holds body links without throwing until the page is reloaded", async () => {
+    await setStorage({
+      enabled: true,
+      blocklist: [
+        {
+          type: "url",
+          value: "https://example.com/help",
+          note: "",
+          addedAt: "2026-10-18T00:00:00Z",
+        },
+      ],
+    });
     const page = await openGmail();
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
@@ -362,6 +373,10 @@ describe("after the extension is reloaded", () => {
     await page.waitForTimeout(500);
     assert.equal(page.url(), "https://mail.google.com/mail/u/0/");
     assert.equal(await page.locator("[data-mail-link-guard-notice] [role=alert]").count(), 1);
+    // A blocklisted link outside the message body stays blocked as well.
+    await page.click("#outside");
+    await page.waitForTimeout(300);
+    assert.equal(page.url(), "https://mail.google.com/mail/u/0/");
     assert.deepEqual(
       errors.filter((e) => /context invalidated/i.test(e)),
       [],
