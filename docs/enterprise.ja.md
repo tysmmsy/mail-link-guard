@@ -9,7 +9,7 @@ Chromeが管理の仕組みからポリシーを受け取り、`chrome.storage.m
 | ポリシー | 型 | 効果 |
 |---|---|---|
 | `enforcedEnabled` | 真偽値 | `true`にすると、全員のリンクの確認とブロックを常にオンにします。`false`なら常にオフです。設定しなければ利用者が選べます。 |
-| `enforcedBlocklist` | `{ "type", "value", "note" }`の配列 | 全員に適用するブロックリストです。利用者の設定画面には「組織の管理者による設定」として表示され、削除できません。`type`は`domain`、`url`、`wildcard`、`regex`のいずれかで、書き方は設定画面と同じです。不正な項目は無視します。 |
+| `enforcedBlocklist` | `{ "type", "value", "note" }`の配列 | 全員に適用するブロックリストです。利用者の設定画面には「組織の設定」として表示され、削除できません。`type`は`domain`、`url`、`wildcard`、`regex`のいずれかで、書き方は設定画面と同じです。不正な項目は無視します。 |
 | `allowUserBlocklist` | 真偽値 | `false`にすると、利用者が自分で登録した項目を無視し、追加とインポートもできなくします。`enforcedBlocklist`だけが適用されます。既定は`true`です。 |
 
 スキーマは[static/managed_schema.json](../static/managed_schema.json)です。
@@ -17,7 +17,7 @@ Chromeが管理の仕組みからポリシーを受け取り、`chrome.storage.m
 そのため`allowUserBlocklist`を`false`にすると、初期の項目も効かなくなります。
 残したい場合は、READMEに載せている値を`enforcedBlocklist`に加えてください。
 
-管理者がブロックした行き先のリンクをクリックすると、「組織の管理者がこの行き先をブロックしています」と表示し、開けません。
+管理者がブロックした行き先のリンクをクリックすると、「組織の管理者がブロックしています」と表示し、開けません。
 
 ## 拡張機能のID
 
