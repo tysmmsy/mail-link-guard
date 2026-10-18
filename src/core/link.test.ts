@@ -111,6 +111,10 @@ describe("embeddedTarget", () => {
     assert.equal(target("https://a.test/#//evil.test"), "evil.test");
     assert.equal(target("https://a.test//evil.test/x"), "evil.test");
     assert.equal(target("https://a.test/%09/evil.test"), "evil.test");
+    assert.equal(target("https://a.test/r?a=https://a.test/&b=https://evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/go/https://a.test/https://evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/r?to=https://a.test@evil.test/"), "evil.test");
+    assert.equal(target("https://a.test/r?to=//user:pw@evil.test:8443/"), "evil.test");
   });
 
   it("ignores ordinary queries and redirects within the same site", () => {

@@ -120,12 +120,21 @@ function decodeSafe(s: string): string {
 
 // After a double slash or backslash ("//host", "\\host", "/\\host"), or right after a
 // scheme without slashes ("https:host"): the host part of an embedded URL.
-const EMBEDDED_HOST = /(?:[\\/]{2}|\bhttps?:(?=[^\\/]))([^\s\\/?#&=]+\.[^\s\\/?#&=]+)/i;
+const EMBEDDED_AUTHORITY = /(?:[\\/]{2}|\bhttps?:(?=[^\\/]))([^\s\\/?#&=]+)/gi;
+
+/** The host of an authority such as "user:pw@evil.example:8443", or null if it has no dot. */
+function hostOfAuthority(authority: string): string | null {
+  const afterUserinfo = authority.slice(authority.lastIndexOf("@") + 1);
+  const host = afterUserinfo.replace(/:\d*$/, "").toLowerCase().replace(/\.$/, "");
+  return host.includes(".") ? host : null;
+}
 
 /**
  * The host of another site this URL appears to hand to a redirector, read from the
  * decoded path, query (keys and values) and fragment, or null. Tab, CR and LF are removed
  * first because browsers drop them from URLs ("/\t/evil.example" acts as "//evil.example").
+ * Every candidate is checked, so a same-site URL earlier in the string cannot hide an
+ * off-site one later.
  */
 export function embeddedTarget(url: URL): string | null {
   // The path keeps its leading "/", which with a following "/" (or a tab-split "/\t/")
@@ -135,11 +144,11 @@ export function embeddedTarget(url: URL): string | null {
     if (!raw) continue;
     // Decode twice to catch double encoding, as many redirectors decode again.
     const text = decodeSafe(decodeSafe(raw.replace(/\+/g, " "))).replace(/[\t\r\n]/g, "");
-    const m = EMBEDDED_HOST.exec(text);
-    if (!m) continue;
-    const host = m[1].toLowerCase().replace(/\.$/, "");
-    // Same site in either direction, ignoring "www.", is an in-site redirect.
-    if (!hostsRelated(host, url.hostname)) return host;
+    for (const m of text.matchAll(EMBEDDED_AUTHORITY)) {
+      const host = hostOfAuthority(m[1]);
+      // Same site in either direction, ignoring "www.", is an in-site redirect.
+      if (host && !hostsRelated(host, url.hostname)) return host;
+    }
   }
   return null;
 }
