@@ -127,6 +127,7 @@ pnpm typecheck
 pnpm package        # release/mail-link-guard-<version>.zip
 pnpm screenshots    # release/screenshots/
 pnpm icons          # redraws static/icons/ from scripts/make-icons.ts
+pnpm policy list.json  # prints policy JSON from an exported blocklist (docs/enterprise.md)
 ```
 
 To use it in your own Chrome, turn on Developer mode in `chrome://extensions`, choose "Load unpacked" and select `dist/`. After `pnpm build`, press the reload button on the extension's card. Run `pnpm exec playwright install chromium` once before the e2e test.
