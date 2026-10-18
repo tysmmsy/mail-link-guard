@@ -104,7 +104,7 @@ Links to sites on the allowlist open without the dialog, so the dialog keeps its
 - The allowlist cannot be imported; organizations push allowed sites through policy instead.
 - Up to 1,000 sites.
 
-An allowlist cannot protect against an allowed site itself being compromised.
+An allowlist cannot protect against an allowed site itself being compromised. The reasoning behind these rules, and what a change to them must argue, is in [docs/decisions/0001-allowlist.md](docs/decisions/0001-allowlist.md).
 
 ## Permissions
 

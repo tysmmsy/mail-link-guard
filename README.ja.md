@@ -121,6 +121,7 @@ MIT Licenseのオープンソースです。
 - 上限は1,000件です。
 
 許可したサイト自体が乗っ取られた場合は防げません。
+これらの制限を決めた経緯と、変更するときに示すべき反論の条件は[docs/decisions/0001-allowlist.ja.md](docs/decisions/0001-allowlist.ja.md)にあります。
 
 ## 権限
 
