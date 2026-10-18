@@ -348,3 +348,28 @@ export function showDialog(
   (document.body ?? document.documentElement).append(host);
   root.querySelector<HTMLElement>("[data-autofocus]")?.focus({ preventScroll: true });
 }
+
+/**
+ * Shown when this copy of the content script has outlived the extension (it was updated
+ * or reloaded). chrome.i18n is no longer reachable, so the text is built in.
+ */
+export function showReloadNotice(): void {
+  const ja = navigator.language.toLowerCase().startsWith("ja");
+  const text = ja
+    ? "Mail Link Guardが更新されました。リンクを確認するには、このページを再読み込みしてください。"
+    : "Mail Link Guard was updated. Reload this page to check links again.";
+  const host = document.createElement("div");
+  if (__E2E__) host.setAttribute("data-mail-link-guard-notice", "");
+  const root = host.attachShadow({ mode: __E2E__ ? "open" : "closed" });
+  const box = document.createElement("div");
+  box.setAttribute("role", "alert");
+  box.textContent = text;
+  const style = document.createElement("style");
+  style.textContent = `div { position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 2147483647; max-width: 560px; padding: 10px 16px; background: #ffc; color: #000;
+    border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0,0,0,.35);
+    font: 16px/1.5 "Osaka", "Hiragino Sans", "Meiryo", system-ui, sans-serif; }`;
+  root.append(style, box);
+  (document.body ?? document.documentElement).append(host);
+  setTimeout(() => host.remove(), 8000);
+}

@@ -345,3 +345,26 @@ describe("options page", () => {
     await page.close();
   });
 });
+
+// Runs last: it reloads the extension, which leaves the running page with a stale script.
+describe("after the extension is reloaded", () => {
+  it("holds body links without throwing until the page is reloaded", async () => {
+    const page = await openGmail();
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (m) => {
+      if (m.type() === "error") errors.push(m.text());
+    });
+    await worker.evaluate(() => chrome.runtime.reload());
+    await page.waitForTimeout(1500);
+    await page.click("#plain");
+    await page.waitForTimeout(500);
+    assert.equal(page.url(), "https://mail.google.com/mail/u/0/");
+    assert.equal(await page.locator("[data-mail-link-guard-notice] [role=alert]").count(), 1);
+    assert.deepEqual(
+      errors.filter((e) => /context invalidated/i.test(e)),
+      [],
+    );
+    await page.close();
+  });
+});
