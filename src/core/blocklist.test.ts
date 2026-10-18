@@ -228,6 +228,8 @@ describe("defaultEntries", () => {
     assert.ok(blocked("[::1]"));
     assert.ok(blocked("invoice.zip"));
     assert.ok(blocked("trailer.mov"));
+    assert.ok(blocked("invoice.zip."));
+    assert.ok(blocked("192.168.0.1."));
   });
 
   it("leaves file links, e-mail-like queries and ordinary hosts alone", () => {

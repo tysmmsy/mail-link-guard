@@ -95,11 +95,12 @@ function start(): void {
   const onLinkActivation = (e: MouseEvent) => {
     if (e.type === "click" && e.button !== 0) return;
     if (e.type === "auxclick" && e.button !== 1) return;
+    // The last settings this copy read still apply: if checking was off, stay out of the way.
+    if (isDialogEvent(e) || settings?.enabled === false) return;
     if (!contextAlive()) {
       retire(e);
       return;
     }
-    if (isDialogEvent(e) || settings?.enabled === false) return;
 
     const anchor = anchorFrom(e);
     if (!anchor) return;

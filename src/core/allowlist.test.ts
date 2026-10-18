@@ -49,6 +49,15 @@ describe("carriesUrl", () => {
     assert.ok(carriesUrl(new URL("https://a.test/go/https://evil.test/")));
     assert.equal(carriesUrl(new URL("https://a.test/news?id=1")), false);
   });
+
+  it("spots protocol-relative, backslash and encoded forms", () => {
+    assert.ok(carriesUrl(new URL("https://a.test/r?to=//evil.test/")));
+    assert.ok(carriesUrl(new URL("https://a.test/r?to=%2F%2Fevil.test")));
+    assert.ok(carriesUrl(new URL("https://a.test/r?to=%5C%5Cevil.test")));
+    assert.ok(carriesUrl(new URL("https://a.test/r?to=/%5Cevil.test")));
+    assert.ok(carriesUrl(new URL("https://a.test/r#//evil.test")));
+    assert.equal(carriesUrl(new URL("https://a.test/a/b?c=d/e")), false);
+  });
 });
 
 describe("allowedToSkip", () => {
@@ -70,6 +79,15 @@ describe("allowedToSkip", () => {
     assert.equal(skip(list, "https://www.example.com/", "https://bank.test/"), false);
     assert.equal(skip(list, "https://www.example.com/r?url=https://evil.test/"), false);
     assert.equal(skip(list, "https://user@www.example.com/"), false);
+  });
+
+  it("lets an organization's shared-host tenant through, but not a user's", () => {
+    const r = makeAllowEntry("contoso.sharepoint.com", false, "", "", { enforced: true });
+    assert.ok("entry" in r);
+    assert.ok(skip([r.entry], "https://contoso.sharepoint.com/sites/team"));
+    assert.equal(skip([{ ...r.entry, enforced: false }], "https://contoso.sharepoint.com/"), false);
+    // Other notes still show the dialog for policy entries.
+    assert.equal(skip([r.entry], "https://contoso.sharepoint.com/", "https://bank.test/"), false);
   });
 
   it("judges the destination after removing a redirect wrapper", () => {

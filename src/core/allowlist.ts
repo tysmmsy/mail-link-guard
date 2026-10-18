@@ -17,6 +17,8 @@ export interface AllowEntry {
   note: string;
   /** ISO 8601 timestamp; empty for entries from the organization's policy. */
   addedAt: string;
+  /** Set on entries from the organization's policy, which may name a shared-hosting tenant. */
+  enforced?: boolean;
 }
 
 export const MAX_ALLOW_ENTRIES = 1_000;
@@ -47,19 +49,34 @@ export function makeAllowEntry(
       if (covered) return { error: "shared-parent", detail: covered };
     }
   }
-  return { entry: { host, includeSubdomains, note: note.trim().slice(0, 200), addedAt } };
+  const entry: AllowEntry = { host, includeSubdomains, note: note.trim().slice(0, 200), addedAt };
+  if (enforced) entry.enforced = true;
+  return { entry };
 }
 
 export function allowKey(e: Pick<AllowEntry, "host" | "includeSubdomains">): string {
   return `${e.includeSubdomains ? "*." : ""}${e.host}`;
 }
 
-/** True when any query value or the path carries another http(s) URL: a possible redirect. */
+/**
+ * True when the path, a query value or the fragment carries another URL: a possible
+ * redirect. Covers "https://", protocol-relative "//host", backslash forms browsers treat
+ * as slashes ("\\host", "/\\host"), and their percent-encoded variants.
+ */
 export function carriesUrl(url: URL): boolean {
-  const pattern = /https?:\/\/|https?%3a%2f%2f/i;
+  const pattern = /[\\/]{2}|(?:%2f|%5c){2}/i;
+  // The path always starts with one "/", so only a second slash right after counts.
   if (pattern.test(url.pathname)) return true;
   for (const value of url.searchParams.values()) if (pattern.test(value)) return true;
-  return pattern.test(url.hash);
+  return pattern.test(decodeSafe(url.hash));
+}
+
+function decodeSafe(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
 }
 
 function hostAllowed(entries: readonly AllowEntry[], host: string): AllowEntry | null {
@@ -77,8 +94,14 @@ export function allowedToSkip(
   entries: readonly AllowEntry[],
   analysis: LinkAnalysis,
 ): AllowEntry | null {
-  if (entries.length === 0 || analysis.notes.length > 0) return null;
+  if (entries.length === 0) return null;
   const d = analysis.destination;
   if (d.protocol !== "https:" || d.port !== "" || carriesUrl(d)) return null;
-  return hostAllowed(entries, d.hostname);
+  const entry = hostAllowed(entries, d.hostname);
+  if (!entry) return null;
+  // The shared-host note is expected for an organization's own tenant (for example
+  // contoso.sharepoint.com), which only policy entries may name. Any other note still
+  // shows the dialog.
+  const notes = entry.enforced ? analysis.notes.filter((n) => n !== "shared-host") : analysis.notes;
+  return notes.length === 0 ? entry : null;
 }

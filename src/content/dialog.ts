@@ -86,7 +86,8 @@ button {
 /* Hover: the lavender tint Platinum used for highlighted controls. Instant, no transition. */
 button:hover:not(:disabled) { background-image: linear-gradient(#fff, #ccccee); }
 .panel label:hover { color: #333399; }
-button:active { background: #777; color: #fff; box-shadow: inset 1px 1px 0 #000; }
+/* Same specificity as the hover rule and declared after it, so a pressed button shows the dark fill. */
+button:active:not(:disabled) { background: #777; color: #fff; box-shadow: inset 1px 1px 0 #000; }
 button.primary {
   box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #999, 0 0 0 2px #ddd, 0 0 0 4px #000;
   margin: 0 4px;
