@@ -118,6 +118,7 @@ describe("embeddedTarget", () => {
     assert.equal(target("https://a.test/go/https:/evil.test/"), "evil.test");
     assert.equal(target("https://a.test/go/http:%5Cevil.test/"), "evil.test");
     assert.equal(target("https://a.test//[2001:db8::1]/x"), "[2001:db8::1]");
+    assert.equal(target("https://a.test/r?to=//user@[2001:db8::1]:8443/"), "[2001:db8::1]");
     assert.equal(target("https://a.test/r?to=https://αmazon.co.jp/"), "xn--mazon-c9d.co.jp");
   });
 

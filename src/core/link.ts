@@ -135,8 +135,9 @@ const EMBEDDED_AUTHORITY =
  * (Punycode) form the URL parser gives the destination, or null if it is not a host.
  */
 function hostOfAuthority(authority: string): string | null {
-  if (authority.startsWith("[")) return authority.toLowerCase();
   const afterUserinfo = authority.slice(authority.lastIndexOf("@") + 1);
+  const ipv6 = /^\[[0-9a-f:.]+\]/i.exec(afterUserinfo);
+  if (ipv6) return ipv6[0].toLowerCase();
   const raw = afterUserinfo.replace(/:\d*$/, "").replace(/\.$/, "");
   if (!raw.includes(".") && !raw.includes("。")) return null;
   try {
