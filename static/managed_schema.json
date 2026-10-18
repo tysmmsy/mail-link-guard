@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "enforcedEnabled": {
+      "title": "Lock link checking on or off",
+      "description": "true keeps link checking (and blocking) on for every user; false keeps it off. Leave unset to let users decide.",
+      "type": "boolean"
+    },
+    "allowUserBlocklist": {
+      "title": "Allow users' own blocklist",
+      "description": "false ignores entries users added themselves and stops them from adding or importing entries, so only enforcedBlocklist applies. Default: true.",
+      "type": "boolean"
+    },
+    "enforcedBlocklist": {
+      "title": "Blocklist entries enforced for all users",
+      "description": "Entries users cannot remove. type is domain, url, wildcard or regex; value as in the options page; note is shown to the user.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["domain", "url", "wildcard", "regex"] },
+          "value": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

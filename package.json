@@ -1,0 +1,59 @@
+{
+  "name": "mail-link-guard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open source Chrome extension that shows where a webmail link really goes before it opens, with a local blocklist (domains, URLs, wildcards, regular expressions)",
+  "license": "MIT",
+  "author": "Masaya Toyoshima",
+  "homepage": "https://github.com/tysmmsy/mail-link-guard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tysmmsy/mail-link-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tysmmsy/mail-link-guard/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@10.30.1",
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "watch": "node scripts/build.ts --watch",
+    "package": "MLG_E2E=0 node scripts/build.ts && node scripts/package.ts",
+    "icons": "node scripts/make-icons.ts",
+    "screenshots": "MLG_E2E=1 node scripts/build.ts && node scripts/screenshots.ts",
+    "test": "node --test 'src/**/*.test.ts'",
+    "test:e2e": "MLG_E2E=1 node scripts/build.ts && node --test 'e2e/**/*.test.ts'",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/chrome": "^0.3.5",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "playwright": "^1.64.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.59.0",
+    "radix-ui": "^1.8.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0"
+  }
+}

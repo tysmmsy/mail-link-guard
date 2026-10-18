@@ -1,0 +1,20 @@
+<!doctype html>
+<!-- Stand-in for a Gmail message view: only the .a3s body container matters to the extension. -->
+<html lang="en">
+  <head><meta charset="utf-8" /><title>Fake Gmail</title></head>
+  <body>
+    <nav><a id="outside" href="https://example.com/help">Help</a></nav>
+    <div class="a3s">
+      <p><a id="plain" href="https://example.com/news">Read the news</a></p>
+      <p><a id="mismatch" href="https://evil.test/login">https://bank.example.com/</a></p>
+      <p><a id="wrapped" href="https://www.google.com/url?q=https://evil.test/wrapped">Track your parcel</a></p>
+      <p><a id="greek" href="https://xn--mazon-c9d.co.jp/ap/signin">Amazon.co.jp</a></p>
+      <p><a id="mailto" href="mailto:someone@example.com">someone@example.com</a></p>
+      <p><input id="search" type="text" /></p>
+    </div>
+    <script>
+      window.pageKeys = [];
+      document.addEventListener("keydown", (e) => window.pageKeys.push(e.key));
+    </script>
+  </body>
+</html>

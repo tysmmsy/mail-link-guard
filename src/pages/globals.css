@@ -1,0 +1,120 @@
+/* Styles for the options page and the popup: Tailwind plus a classic Mac OS
+   "Platinum" look (gray window, pinstriped title bar, beveled controls).
+   One light theme only and no animations, so pages render immediately.
+   The Gmail dialog in src/content/dialog.ts mirrors these values in plain CSS. */
+
+@import "tailwindcss";
+
+@theme {
+  --color-platinum: #dddddd;
+  --color-platinum-light: #eeeeee;
+  --color-platinum-dark: #999999;
+  --color-platinum-shadow: #777777;
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-focus: #6666cc;
+  --color-alert: #cc0000;
+  --color-ok: #006600;
+  --font-sans:
+    "Osaka", "Charcoal", "Chicago", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Meiryo",
+    system-ui, sans-serif;
+  --font-mono: "Monaco", "Osaka-Mono", ui-monospace, Menlo, monospace;
+}
+
+@layer base {
+  html {
+    background-color: #a3a3b8;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgb(0 0 0 / 0.04) 0 2px,
+      transparent 2px 4px
+    );
+  }
+  body {
+    @apply font-sans text-[13px] leading-normal text-ink;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 1px;
+  }
+  a {
+    @apply text-[#0000cc] underline;
+  }
+}
+
+@layer components {
+  /* A document window: 1px black frame, bevel, and a hard drop shadow. */
+  .mac-window {
+    @apply border border-ink bg-platinum;
+    box-shadow:
+      inset 1px 1px 0 var(--color-paper),
+      inset -1px -1px 0 var(--color-platinum-dark),
+      2px 2px 0 rgb(0 0 0 / 0.35);
+  }
+  /* Pinstriped title bar with the title on a plain patch in the middle. */
+  .mac-titlebar {
+    @apply flex h-[22px] items-center justify-center border-b border-ink px-1;
+    background-color: var(--color-platinum);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--color-platinum-light) 0 1px,
+      var(--color-platinum-dark) 1px 2px
+    );
+    background-clip: content-box;
+    padding-block: 5px;
+  }
+  .mac-titlebar > span {
+    @apply bg-platinum px-2 text-[13px] leading-[12px] font-bold;
+  }
+  /* Group box: an etched frame with its label sitting on the top edge. */
+  .mac-group {
+    @apply relative mt-5 border border-platinum-dark px-3 pt-4 pb-3;
+    box-shadow:
+      1px 1px 0 var(--color-paper),
+      inset 1px 1px 0 var(--color-paper);
+  }
+  .mac-group > h2 {
+    @apply absolute -top-[10px] left-2 bg-platinum px-1 text-[13px] font-bold;
+  }
+  /* Raised button. */
+  .mac-button {
+    @apply inline-flex h-[22px] min-w-[72px] items-center justify-center rounded-[5px] border border-ink px-3 text-[13px] whitespace-nowrap text-ink;
+    background-image: linear-gradient(var(--color-paper), var(--color-platinum));
+    box-shadow:
+      inset 1px 1px 0 var(--color-paper),
+      inset -1px -1px 0 var(--color-platinum-dark);
+  }
+  .mac-button:active:not(:disabled) {
+    background-image: none;
+    background-color: var(--color-platinum-shadow);
+    color: var(--color-paper);
+    box-shadow: inset 1px 1px 0 var(--color-ink);
+  }
+  .mac-button:disabled {
+    @apply border-platinum-dark text-platinum-dark;
+  }
+  /* The default button carries the thick rounded ring of a classic Mac default button. */
+  .mac-button-default {
+    box-shadow:
+      inset 1px 1px 0 var(--color-paper),
+      inset -1px -1px 0 var(--color-platinum-dark),
+      0 0 0 2px var(--color-platinum),
+      0 0 0 4px var(--color-ink);
+  }
+  /* Sunken white field. */
+  .mac-field {
+    @apply h-[22px] border border-ink bg-paper px-1 text-[13px] text-ink;
+    box-shadow:
+      -1px -1px 0 var(--color-platinum-dark),
+      1px 1px 0 var(--color-paper);
+  }
+  .mac-field::placeholder {
+    @apply text-platinum-shadow;
+  }
+}
