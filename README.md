@@ -42,7 +42,18 @@ The options page exports JSON Lines: one entry per line, so a shared list diffs,
 - A line can also be a plain string; its type is guessed (`/.../` is a regex, `*` makes a wildcard, a URL with a path is a URL, anything else a domain). `note` and `addedAt` are optional. Blank lines are skipped, and a line that cannot be read is reported and skipped.
 - Import also reads JSON: an array of entries or strings, or the older export file.
 - "Export for policy (JSON)" writes the JSON an administrator pastes into Chrome policy. `pnpm policy blocklist.jsonl` does the same from the command line and fails if any line is invalid.
-- Limits: 10,000 entries in your own list, and 2 MB per import file. Entries enforced by an organization are not counted.
+
+### Limits
+
+| Item | Limit |
+|---|---|
+| Entries in your own blocklist | 10,000 |
+| Import file size | 2 MB |
+| Wildcard or regular expression length | 500 characters |
+| Note length | 200 characters |
+| Entries enforced by an organization | No limit in the extension; not counted toward the 10,000 |
+
+The 10,000-entry limit keeps the list well inside the 10 MB that `chrome.storage.local` allows (an entry takes roughly 100 to 200 bytes) and keeps the check on each click fast.
 
 ### Default entries
 
