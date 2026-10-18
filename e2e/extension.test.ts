@@ -33,6 +33,10 @@ async function getBlocklist(): Promise<{ type: string; value: string; note: stri
   );
 }
 
+async function getStorage(key: string): Promise<unknown> {
+  return worker.evaluate(async (k) => (await chrome.storage.local.get(k))[k], key);
+}
+
 async function openGmail(): Promise<Page> {
   const page = await context.newPage();
   await page.goto("https://mail.google.com/mail/u/0/");
@@ -197,6 +201,70 @@ describe("Gmail page", () => {
     await Promise.all([page.waitForURL("https://example.com/help"), page.click("#outside")]);
     await setStorage({ enabled: true });
     await page.close();
+  });
+});
+
+describe("allowlist", () => {
+  const allow = (host: string) => ({
+    host,
+    includeSubdomains: false,
+    note: "",
+    addedAt: "2026-10-18T00:00:00Z",
+  });
+
+  it("opens an allowlisted link without the dialog", async () => {
+    await setStorage({ blocklist: [], allowlist: [allow("example.com")] });
+    const page = await openGmail();
+    await Promise.all([page.waitForURL("https://example.com/news"), page.click("#plain")]);
+    assert.equal(await dialog(page).count(), 0);
+    await page.close();
+  });
+
+  it("still asks when the link carries another URL, and blocks before allowing", async () => {
+    await setStorage({
+      allowlist: [allow("www.example.com"), allow("example.com")],
+      blocklist: [
+        {
+          type: "url",
+          value: "https://example.com/news",
+          note: "",
+          addedAt: "2026-10-18T00:00:00Z",
+        },
+      ],
+    });
+    const page = await openGmail();
+    await page.click("#redirect");
+    await dialog(page).waitFor();
+    assert.equal(await dialog(page).locator(".message").count(), 0);
+    await page.keyboard.press("Escape");
+    await page.click("#plain");
+    await dialog(page).locator(".message").waitFor();
+    await page.close();
+    await setStorage({ allowlist: [], blocklist: [] });
+  });
+
+  it("warns about shared-hosting sites and refuses them in the settings", async () => {
+    const page = await openGmail();
+    await page.click("#sites");
+    await dialog(page).waitFor();
+    const notes = await dialog(page).locator(".notes li").allTextContents();
+    assert.ok(
+      notes.some((n) => n.includes("sites.google.com")),
+      notes.join(" / "),
+    );
+    await page.close();
+
+    const options = await context.newPage();
+    await options.goto(`chrome-extension://${extensionId}/options.html`);
+    await options.fill("#allow-host", "sites.google.com");
+    await options.click("#allow-form button[type=submit]");
+    await options.locator("#allow-status .text-alert").waitFor();
+    assert.deepEqual(await getStorage("allowlist"), []);
+    await options.fill("#allow-host", "www.example.com");
+    await options.click("#allow-form button[type=submit]");
+    await options.waitForFunction(() => document.querySelectorAll("#allow-rows tr").length === 1);
+    await options.close();
+    await setStorage({ allowlist: [] });
   });
 });
 

@@ -34,6 +34,26 @@ describe("normalizePolicy", () => {
     );
   });
 
+  it("reads the organization's allowlist, including shared-host tenants", () => {
+    const p = normalizePolicy({
+      allowUserAllowlist: false,
+      enforcedAllowlist: [
+        { host: "corp.sharepoint.com", note: "our tenant" },
+        { host: "example.com", includeSubdomains: true },
+        { host: "1.2.3.4" },
+        { nothost: "x" },
+      ],
+    });
+    assert.equal(p.allowUserAllowlist, false);
+    assert.deepEqual(
+      p.enforcedAllowlist.map((e) => [e.host, e.includeSubdomains]),
+      [
+        ["corp.sharepoint.com", false],
+        ["example.com", true],
+      ],
+    );
+  });
+
   it("ignores values of the wrong type", () => {
     const p = normalizePolicy({ enforcedEnabled: "yes", allowUserBlocklist: 0 });
     assert.equal(p.enforcedEnabled, undefined);
@@ -67,6 +87,18 @@ describe("effectiveSettings", () => {
     assert.deepEqual(
       e.blocklist.map((x) => x.value),
       ["corp-banned.test"],
+    );
+  });
+
+  it("drops the user's allowlist when the organization does not allow it", () => {
+    const withAllow = {
+      ...settings,
+      allowlist: [{ host: "a.test", includeSubdomains: false, note: "", addedAt: "" }],
+    };
+    assert.equal(effectiveSettings(withAllow, NO_POLICY).allowlist.length, 1);
+    assert.equal(
+      effectiveSettings(withAllow, { ...NO_POLICY, allowUserAllowlist: false }).allowlist.length,
+      0,
     );
   });
 

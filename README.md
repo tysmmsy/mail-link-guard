@@ -81,6 +81,7 @@ A regular expression runs on every click in a message, and a badly written one (
 |---|---|
 | `enabled` | Whether links are checked |
 | `blocklist` | Each entry's type, value, optional note and date added |
+| `allowlist` | Each allowed host, whether subdomains are included, optional note and date added |
 
 Nothing else is stored. Settings an organization enforces arrive through Chrome policy in the read-only `chrome.storage.managed`; the extension does not write them anywhere. The URL and text of a clicked link are kept in memory only while the dialog is open. Message contents, browsing history and click history are never read into storage.
 
@@ -90,6 +91,20 @@ Nothing else is stored. Settings an organization enforces arrive through Chrome 
 - Your data leaves the device only when you export the blocklist to a file yourself.
 
 See [PRIVACY.md](PRIVACY.md).
+
+## Allowlist
+
+Links to sites on the allowlist open without the dialog, so the dialog keeps its meaning for links that are not routine. Allowing a site is the riskiest setting, so it is narrow on purpose:
+
+- Sites can be added only on the options page, never from the dialog, so allowing is a deliberate choice rather than a click made while looking at a suspicious link.
+- Entries are host names. A host matches exactly unless "Include subdomains" is checked.
+- The blocklist always wins: a destination on both lists is blocked.
+- The dialog still appears when the link raises any note, is not HTTPS on the default port, or carries another URL (a possible redirect). The check uses the destination after removing redirect wrappers.
+- Sites where anyone can publish pages (such as `sites.google.com`, `github.io`, `sharepoint.com`, `notion.site`) and URL shorteners cannot be added, and "Include subdomains" is refused when it would cover one of them (for example `google.com` would cover `sites.google.com`). Links to these sites show a note in the dialog.
+- The allowlist cannot be imported; organizations push allowed sites through policy instead.
+- Up to 1,000 sites.
+
+An allowlist cannot protect against an allowed site itself being compromised.
 
 ## Permissions
 

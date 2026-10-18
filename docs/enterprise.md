@@ -8,6 +8,8 @@ Administrators can enforce Mail Link Guard settings for everyone through Chrome 
 |---|---|---|
 | `enforcedEnabled` | boolean | `true` keeps link checking and blocking on for every user. `false` keeps it off. Unset: users decide. |
 | `enforcedBlocklist` | array of `{ "type", "value", "note" }` | Entries applied for every user. Users see them on the options page under "Set by your organization" and cannot remove them. `type` is `domain`, `url`, `wildcard` or `regex`, with the same rules as the options page. Invalid entries are ignored. |
+| `enforcedAllowlist` | array of `{ "host", "includeSubdomains", "note" }` | Sites whose links open without the dialog for every user. The blocklist still wins, and suspicious links (any note, not HTTPS, carrying another URL) still show the dialog. Unlike users' entries, these may name a host on a shared-hosting service, such as your own `contoso.sharepoint.com`. |
+| `allowUserAllowlist` | boolean | `false` ignores sites users allowed themselves and stops them from adding any. Default: `true`. |
 | `allowUserBlocklist` | boolean | `false` ignores entries users added themselves and disables adding and importing, so only `enforcedBlocklist` applies. Default: `true`. |
 
 The schema is [static/managed_schema.json](../static/managed_schema.json). The default entries a new install starts with belong to the user's own list, so `allowUserBlocklist: false` also turns them off; add them to `enforcedBlocklist` if you want to keep them (their values are in the README).

@@ -6,12 +6,13 @@ Mail Link Guard is a Chrome extension that shows where a webmail link goes befor
 
 ## What is stored
 
-The extension stores exactly two items in `chrome.storage.local` on your device:
+The extension stores exactly three items in `chrome.storage.local` on your device:
 
 | Item | Contents |
 |---|---|
 | `enabled` | Whether links are checked |
 | `blocklist` | Each entry's type, value, optional note and date added |
+| `allowlist` | Each allowed host, whether subdomains are included, optional note and date added |
 
 `chrome.storage.local` is not synced to your Google account or to other devices.
 
@@ -52,12 +53,13 @@ Mail Link Guardは、Webメールのリンクを開く前に行き先を表示�
 
 ## 保存するもの
 
-お使いの端末の`chrome.storage.local`に、次の2つだけを保存します。
+お使いの端末の`chrome.storage.local`に、次の3つだけを保存します。
 
 | 項目 | 中身 |
 |---|---|
 | `enabled` | リンクを確認するかどうか |
 | `blocklist` | 各項目の種類、値、任意のメモ、登録日 |
+| `allowlist` | 許可したホスト、サブドメインを含むか、任意のメモ、登録日 |
 
 `chrome.storage.local`は、Googleアカウントやほかの端末には同期されません。
 

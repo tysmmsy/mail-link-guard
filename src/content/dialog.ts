@@ -128,6 +128,8 @@ function noteText(kind: NoteKind, a: LinkAnalysis): string {
       return t("notePunycode");
     case "shortener":
       return t("noteShortener");
+    case "shared-host":
+      return t("noteSharedHost", a.destination.hostname);
     case "credentials":
       return t("noteCredentials", safeDecode(a.destination.username));
   }

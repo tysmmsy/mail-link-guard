@@ -28,7 +28,7 @@ Issues and pull requests are welcome. If a rule below gets in the way of a good 
 
 > C-2 reason: "no data leaves the device" is the main promise of the extension. The e2e test checks that no request is made during checking, blocking and adding entries, and that the bundles contain none of the APIs above.
 
-> C-4 note: today only `enabled` and `blocklist` are stored. Data needed only while a dialog is open stays in memory.
+> C-4 note: today only `enabled`, `blocklist` and `allowlist` are stored. Data needed only while a dialog is open stays in memory.
 
 > C-5 reason: the content script is loaded on every visit to the mail page. Keeping it small and dependency-free keeps that load fast, and keeping it unminified lets anyone read exactly what runs next to their mail. The settings page and popup may use React and shadcn/ui.
 
