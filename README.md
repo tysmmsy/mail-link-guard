@@ -4,7 +4,7 @@
 
 Mail Link Guard is an open source Chrome extension (MIT License) that pauses a link click in webmail and shows where the link really goes before it opens. Destinations on your own blocklist are never opened. Everything stays in your browser: the extension stores only its on/off setting and your blocklist, and it makes no network requests.
 
-![Confirmation dialog](release-assets/confirm.png)
+![Confirmation dialog](release-assets/confirm-en.png)
 
 ## What it does
 
@@ -16,7 +16,7 @@ Mail Link Guard is an open source Chrome extension (MIT License) that pauses a l
 
 The extension runs only on `https://mail.google.com/*`.
 
-![Blocked destination](release-assets/blocked.png)
+![Blocked destination](release-assets/blocked-en.png)
 
 ## Blocklist entries
 

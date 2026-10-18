@@ -13,10 +13,16 @@ const out = join(root, "release/screenshots");
 const fixture = await readFile(join(root, "e2e/fixtures/gmail.html"), "utf8");
 
 await mkdir(out, { recursive: true });
+// UI language of the screenshots, e.g. `--lang=en`. It must match the MLG_LANG the
+// extension was built with (see "screenshots" in package.json): Chrome on macOS ignores
+// --lang, so the e2e build can pin the extension's language instead.
+const lang = process.argv.find((a) => a.startsWith("--lang="))?.slice(7) ?? "en";
+
 const context = await chromium.launchPersistentContext(await mkdtemp(join(tmpdir(), "mlg-shot-")), {
   channel: "chromium",
   headless: true,
   viewport: { width: 1280, height: 800 },
+  locale: lang,
   args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
 });
 await context.route("**/*", (route) => {
@@ -56,12 +62,12 @@ await page.goto("https://mail.google.com/mail/u/0/");
 await page.waitForTimeout(300);
 await page.click("#mismatch");
 await page.locator("[data-mail-link-guard] .dialog").waitFor();
-await page.screenshot({ path: join(out, `blocked.png`) });
+await page.screenshot({ path: join(out, `blocked-${lang}.png`) });
 await page.keyboard.press("Escape");
 
 await worker.evaluate(() => chrome.storage.local.set({ blocklist: [] }));
 await page.click("#mismatch");
-await page.screenshot({ path: join(out, `confirm.png`) });
+await page.screenshot({ path: join(out, `confirm-${lang}.png`) });
 
 const options = await context.newPage();
 await worker.evaluate(() =>
@@ -84,13 +90,13 @@ await worker.evaluate(() =>
 );
 await options.goto(`chrome-extension://${id}/options.html`);
 await options.waitForTimeout(200);
-await options.screenshot({ path: join(out, `options.png`) });
+await options.screenshot({ path: join(out, `options-${lang}.png`) });
 
 const popup = await context.newPage();
 await popup.setViewportSize({ width: 320, height: 220 });
 await popup.goto(`chrome-extension://${id}/popup.html`);
 await popup.waitForTimeout(200);
-await popup.screenshot({ path: join(out, `popup.png`) });
+await popup.screenshot({ path: join(out, `popup-${lang}.png`) });
 
 // Small promotional tile (440x280), required by the store listing.
 const tile = await context.newPage();
@@ -107,4 +113,4 @@ await tile.setContent(
 await tile.screenshot({ path: join(out, "promo-small-440x280.png") });
 
 await context.close();
-console.log(`wrote screenshots to ${out}`);
+console.log(`wrote ${lang} screenshots to ${out}`);

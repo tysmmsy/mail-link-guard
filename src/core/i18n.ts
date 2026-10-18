@@ -1,9 +1,14 @@
 // Typed wrapper around chrome.i18n so a misspelled message key fails type-checking,
 // plus a helper that fills [data-i18n] elements on the extension pages.
 
-import type { MessageKey } from "../locales.ts";
+import { locales, type MessageKey } from "../locales.ts";
 
 export function t(key: MessageKey, ...subs: (string | number)[]): string {
+  if (__E2E_LANG__) {
+    // Screenshot builds only; release builds drop this branch and the locale table.
+    const message = (locales[__E2E_LANG__] ?? locales.en)[key];
+    return subs.reduce<string>((m, sub, i) => m.replaceAll(`$${i + 1}`, String(sub)), message);
+  }
   return chrome.i18n.getMessage(key, subs.map(String)) || key;
 }
 

@@ -23,7 +23,7 @@
     "watch": "node scripts/build.ts --watch",
     "package": "MLG_E2E=0 node scripts/build.ts && node scripts/package.ts",
     "icons": "node scripts/make-icons.ts",
-    "screenshots": "MLG_E2E=1 node scripts/build.ts && node scripts/screenshots.ts",
+    "screenshots": "MLG_E2E=1 MLG_LANG=en node scripts/build.ts && node scripts/screenshots.ts --lang=en && MLG_E2E=1 MLG_LANG=ja node scripts/build.ts && node scripts/screenshots.ts --lang=ja",
     "test": "node --test 'src/**/*.test.ts'",
     "test:e2e": "MLG_E2E=1 node scripts/build.ts && node --test 'e2e/**/*.test.ts'",
     "typecheck": "tsc --noEmit",

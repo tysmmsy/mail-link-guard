@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { domainToASCII } from "node:url";
+import { en } from "../locales.ts";
 import {
   defaultEntries,
   type EntryType,
@@ -197,7 +198,10 @@ describe("wildcard and regex entries", () => {
 
 describe("defaultEntries", () => {
   const blocked = (host: string) =>
-    findBlock(defaultEntries(NOW), new URL(`https://${host}/ap/signin`)) !== null;
+    findBlock(
+      defaultEntries(NOW, (key) => en[key]),
+      new URL(`https://${host}/ap/signin`),
+    ) !== null;
 
   it("blocks Amazon lookalikes written with Greek letters", () => {
     assert.ok(blocked(domainToASCII("αmazon.co.jp")));

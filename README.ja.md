@@ -7,7 +7,7 @@ Webメールのリンクを開く前に、実際の行き先を表示するChrom
 保存するのは設定とブロックリストだけで、外部とは通信しません。
 MIT Licenseのオープンソースです。
 
-![確認ダイアログ](release-assets/confirm.png)
+![確認ダイアログ](release-assets/confirm-ja.png)
 
 ## できること
 
@@ -19,7 +19,7 @@ MIT Licenseのオープンソースです。
 
 動くのは`https://mail.google.com/*`だけです。
 
-![ブロックした行き先](release-assets/blocked.png)
+![ブロックした行き先](release-assets/blocked-ja.png)
 
 ## ブロックリスト
 

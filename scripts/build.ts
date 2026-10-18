@@ -44,6 +44,8 @@ const shared: esbuild.BuildOptions = {
   jsx: "automatic",
   define: {
     __E2E__: JSON.stringify(process.env.MLG_E2E === "1"),
+    // E2E builds only: pin the UI language (e.g. MLG_LANG=en) instead of following Chrome.
+    __E2E_LANG__: JSON.stringify(process.env.MLG_E2E === "1" ? (process.env.MLG_LANG ?? "") : ""),
     "process.env.NODE_ENV": '"production"',
   },
   metafile: true,

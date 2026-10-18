@@ -2,7 +2,7 @@
 // format. Everything here is pure so the same rules apply in the content script,
 // the options page and the tests.
 
-import { en, type MessageKey } from "../locales.ts";
+import type { MessageKey } from "../locales.ts";
 import { hostFromInput, isSameOrSubdomain } from "./hosts.ts";
 import { parseHttpUrl } from "./link.ts";
 import { toUnicodeHost } from "./punycode.ts";
@@ -140,7 +140,7 @@ export const DEFAULT_PATTERNS: readonly { value: string; noteKey: MessageKey }[]
 
 export function defaultEntries(
   addedAt = new Date().toISOString(),
-  note: (key: MessageKey) => string = (key) => en[key],
+  note: (key: MessageKey) => string,
 ): BlockEntry[] {
   return DEFAULT_PATTERNS.map(({ value, noteKey }) => ({
     type: "regex",
