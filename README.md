@@ -20,10 +20,50 @@ The extension runs only on `https://mail.google.com/*`.
 
 ## Install
 
-- Chrome Web Store: under review. The link will be added here once the listing is live.
-- Until then, download `mail-link-guard-<version>.zip` from [Releases](https://github.com/tysmmsy/mail-link-guard/releases), unzip it, open `chrome://extensions`, turn on Developer mode, choose "Load unpacked" and select the unzipped folder.
+The Chrome Web Store listing is under review; the link will be added here once it is live. Until then, follow these steps. No programming knowledge is needed.
 
-After updating an unpacked copy, reload the extension and any open mail tabs.
+### 1. Download the file
+
+1. Open the [Releases page](https://github.com/tysmmsy/mail-link-guard/releases/latest).
+2. Under "Assets", click `mail-link-guard-0.1.2.zip` (the number changes with the version) to download it.
+
+### 2. Put it somewhere permanent and unzip it
+
+Chrome loads the unzipped folder every time it starts, so if the folder is deleted or moved, the extension stops working. The Downloads folder is easy to clean out by accident, so avoid it.
+
+- Mac: create a folder named `Chrome Extensions` in your home folder and move the zip into it. Double-click the zip; a folder named `mail-link-guard-0.1.2` appears next to it.
+- Windows: create a folder named `Chrome Extensions` in `Documents` and move the zip into it. Right-click the zip and choose "Extract All".
+
+Rename the new folder to `mail-link-guard`, without the version number. Using the same folder for later versions keeps your blocklist and other settings. Open the folder and check that it contains a file named `manifest.json`.
+
+### 3. Load it into Chrome
+
+1. Type `chrome://extensions` in Chrome's address bar and press Enter.
+2. Turn on "Developer mode" in the top right.
+3. Click "Load unpacked" in the top left.
+4. Select the folder from step 2 (the one containing `manifest.json`) and click "Select".
+5. When "Mail Link Guard" appears in the list, you are done. Pin it from the puzzle-piece icon in the toolbar for easy access.
+6. Reload any open Gmail tabs.
+
+### Updating to a new version
+
+1. Download and unzip the new zip.
+2. Replace the contents of the `mail-link-guard` folder inside `Chrome Extensions` with the contents of the new folder. Keep the folder's name and location.
+3. In `chrome://extensions`, press the reload button (circular arrow) on the Mail Link Guard card, then reload any open Gmail tabs.
+
+Once the extension is on the Chrome Web Store, installing from there updates it automatically.
+
+### Initial settings
+
+The extension starts working right away with the settings below. All of them can be changed on the options page (right-click the toolbar icon and choose "Options").
+
+| Setting | Initial state | Why |
+|---|---|---|
+| Link checking | On | So that installing it is enough to be protected. Turning it off also stops blocking. |
+| Blocklist | Six entries that block common impersonation forms | Domains imitating Amazon, PayPal and others with Greek or Cyrillic letters, text before "@" in a URL, bare IP addresses, and `.zip`/`.mov` domains are rarely used in genuine mail and often used in phishing, so they are blocked on a "block when in doubt" basis. Remove any you do not need, for example the IP-address entry if you open internal systems by IP. |
+| Allowlist | Empty | Skipping the dialog can become a loophole, so only sites you decide you need are added, on the options page. |
+
+The six blocklist entries are added once, on first install. An entry you remove does not come back with an update.
 
 ## Blocklist entries
 
