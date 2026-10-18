@@ -25,6 +25,7 @@ Issues and pull requests are welcome. If a rule below gets in the way of a good 
 | C-7 | A change in behavior comes with a unit or e2e test | SHOULD |
 | C-8 | UI changes keep the classic Mac OS look (gray windows, beveled controls, no animations) | SHOULD |
 | C-9 | A pull request that changes the UI includes a screenshot (`pnpm screenshots`) | NICE TO HAVE |
+| C-10 | A pull request that goes against a decision record in `docs/decisions/` meets the "Changing this decision" conditions of that record, including a logical counter-argument | MUST |
 
 > C-2 reason: "no data leaves the device" is the main promise of the extension. The e2e test checks that no request is made during checking, blocking and adding entries, and that the bundles contain none of the APIs above.
 
