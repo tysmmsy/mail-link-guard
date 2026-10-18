@@ -215,11 +215,11 @@ function AllowlistGroup({ entries, allowed }: { entries: AllowEntry[]; allowed: 
     }
     const latest = await loadSettings();
     if (latest.allowlist.some((x) => allowKey(x) === allowKey(r.entry))) {
-      setStatus({ message: t("optDuplicate"), kind: "error" });
+      setStatus({ message: t("optAllowDuplicate"), kind: "error" });
       return;
     }
     if (latest.allowlist.length >= MAX_ALLOW_ENTRIES) {
-      setStatus({ message: t("optTooMany", MAX_ALLOW_ENTRIES), kind: "error" });
+      setStatus({ message: t("optAllowTooMany", MAX_ALLOW_ENTRIES), kind: "error" });
       return;
     }
     await saveSettings({ allowlist: [...latest.allowlist, r.entry] });

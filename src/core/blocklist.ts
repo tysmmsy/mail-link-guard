@@ -143,13 +143,14 @@ export const DEFAULT_PATTERNS: readonly { value: string; noteKey: MessageKey }[]
     noteKey: "defaultCredentialsNote",
   },
   {
-    // A bare IP address instead of a domain name (IPv4, or IPv6 in brackets).
-    value: "^https?://(?:\\d{1,3}(?:\\.\\d{1,3}){3}|\\[[0-9a-f:.]+\\])(?=[/:?#]|$)",
+    // A bare IP address instead of a domain name (IPv4, or IPv6 in brackets). A trailing
+    // root dot ("192.0.2.1.", "invoice.zip.") is allowed for, since browsers accept it.
+    value: "^https?://(?:\\d{1,3}(?:\\.\\d{1,3}){3}\\.?|\\[[0-9a-f:.]+\\])(?=[/:?#]|$)",
     noteKey: "defaultIpNote",
   },
   {
     // The .zip and .mov top-level domains, which read like file names ("invoice.zip").
-    value: "^https?://[^/?#]+\\.(?:zip|mov)(?=[/:?#]|$)",
+    value: "^https?://[^/?#]+\\.(?:zip|mov)\\.?(?=[/:?#]|$)",
     noteKey: "defaultFileTldNote",
   },
 ];

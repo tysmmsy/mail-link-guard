@@ -300,7 +300,8 @@ describe("options page", () => {
   it("shows the version and open source links, and ships the license", async () => {
     const page = await context.newPage();
     await page.goto(`chrome-extension://${extensionId}/options.html`);
-    assert.match((await page.locator("#version").textContent()) ?? "", /0\.1\.0/);
+    const { version } = JSON.parse(await readFile(join(dist, "manifest.json"), "utf8"));
+    assert.ok(((await page.locator("#version").textContent()) ?? "").includes(version));
     const hrefs = await page
       .locator("ul.links a")
       .evaluateAll((as) => as.map((a) => a.getAttribute("href")));
@@ -341,6 +342,29 @@ describe("options page", () => {
     assert.deepEqual(
       exported.entries.map((e: { value: string }) => e.value),
       ["evil.test", "https://x.test/path", "https://bad.test/a"],
+    );
+    await page.close();
+  });
+});
+
+// Runs last: it reloads the extension, which leaves the running page with a stale script.
+describe("after the extension is reloaded", () => {
+  it("holds body links without throwing until the page is reloaded", async () => {
+    const page = await openGmail();
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (m) => {
+      if (m.type() === "error") errors.push(m.text());
+    });
+    await worker.evaluate(() => chrome.runtime.reload());
+    await page.waitForTimeout(1500);
+    await page.click("#plain");
+    await page.waitForTimeout(500);
+    assert.equal(page.url(), "https://mail.google.com/mail/u/0/");
+    assert.equal(await page.locator("[data-mail-link-guard-notice] [role=alert]").count(), 1);
+    assert.deepEqual(
+      errors.filter((e) => /context invalidated/i.test(e)),
+      [],
     );
     await page.close();
   });

@@ -104,6 +104,8 @@ export const en = {
   optAllowSharedParent:
     "Including subdomains would also allow $1, where anyone can publish pages. Add it without subdomains.",
   optAllowlistEmpty: "No sites.",
+  optAllowDuplicate: "This site is already on the allowlist.",
+  optAllowTooMany: "The allowlist can hold up to $1 sites.",
   optAllowUserDisabled: "Your organization does not allow your own allowlist.",
   optManagedAllowlist: "Sites allowed by your organization",
   optCount: "$1 entries",
@@ -227,6 +229,8 @@ export const ja: Record<MessageKey, string> = {
   optAllowSharedParent:
     "サブドメインを含めると、だれでもページを作れる$1も許可されます。サブドメインを含めずに登録してください。",
   optAllowlistEmpty: "登録はありません。",
+  optAllowDuplicate: "すでに許可リストに登録されています。",
+  optAllowTooMany: "許可リストに登録できるのは$1件までです。",
   optAllowUserDisabled: "組織の設定で、自分では許可リストに登録できません。",
   optManagedAllowlist: "組織の許可リスト",
   optCount: "$1件",
@@ -341,6 +345,8 @@ export const zh_CN: Record<MessageKey, string> = {
   optAllowShared: "任何人都能在此网站发布页面，因此无法添加。",
   optAllowSharedParent: "包括子域名会同时允许任何人都能发布页面的 $1。请不包括子域名添加。",
   optAllowlistEmpty: "没有网站。",
+  optAllowDuplicate: "此网站已在允许列表中。",
+  optAllowTooMany: "允许列表最多可容纳 $1 个网站。",
   optAllowUserDisabled: "贵组织不允许使用您自己的允许列表。",
   optManagedAllowlist: "贵组织允许的网站",
   optCount: "$1 个条目",
@@ -455,6 +461,8 @@ export const zh_TW: Record<MessageKey, string> = {
   optAllowShared: "任何人都能在此網站發布網頁，因此無法新增。",
   optAllowSharedParent: "包含子網域也會允許任何人都能發布網頁的 $1。請不包含子網域新增。",
   optAllowlistEmpty: "沒有網站。",
+  optAllowDuplicate: "此網站已在允許清單中。",
+  optAllowTooMany: "允許清單最多可容納 $1 個網站。",
   optAllowUserDisabled: "貴機構不允許使用您自己的允許清單。",
   optManagedAllowlist: "貴機構允許的網站",
   optCount: "$1 個項目",
@@ -580,6 +588,8 @@ export const ko: Record<MessageKey, string> = {
   optAllowSharedParent:
     "하위 도메인을 포함하면 누구나 페이지를 만들 수 있는 $1도 허용됩니다. 하위 도메인 없이 추가하세요.",
   optAllowlistEmpty: "사이트가 없습니다.",
+  optAllowDuplicate: "이 사이트는 이미 허용 목록에 있습니다.",
+  optAllowTooMany: "허용 목록에는 최대 $1개의 사이트를 추가할 수 있습니다.",
   optAllowUserDisabled: "조직에서 직접 허용 목록을 쓰도록 허용하지 않습니다.",
   optManagedAllowlist: "조직에서 허용한 사이트",
   optCount: "항목 $1개",
@@ -708,6 +718,8 @@ export const es: Record<MessageKey, string> = {
   optAllowSharedParent:
     "Incluir subdominios también permitiría $1, donde cualquiera puede publicar páginas. Añádelo sin subdominios.",
   optAllowlistEmpty: "No hay sitios.",
+  optAllowDuplicate: "Este sitio ya está en la lista de permitidos.",
+  optAllowTooMany: "La lista de permitidos admite hasta $1 sitios.",
   optAllowUserDisabled: "Tu organización no permite tu propia lista de permitidos.",
   optManagedAllowlist: "Sitios permitidos por tu organización",
   optCount: "$1 entradas",
@@ -837,6 +849,8 @@ export const pt_BR: Record<MessageKey, string> = {
   optAllowSharedParent:
     "Incluir subdomínios também permitiria $1, onde qualquer pessoa pode publicar páginas. Adicione sem subdomínios.",
   optAllowlistEmpty: "Nenhum site.",
+  optAllowDuplicate: "Este site já está na lista de permissões.",
+  optAllowTooMany: "A lista de permissões comporta até $1 sites.",
   optAllowUserDisabled: "Sua organização não permite sua própria lista de permissões.",
   optManagedAllowlist: "Sites permitidos pela sua organização",
   optCount: "$1 entradas",
@@ -968,6 +982,8 @@ export const fr: Record<MessageKey, string> = {
   optAllowSharedParent:
     "Inclure les sous-domaines autoriserait aussi $1, où chacun peut publier des pages. Ajoutez-le sans les sous-domaines.",
   optAllowlistEmpty: "Aucun site.",
+  optAllowDuplicate: "Ce site figure déjà dans la liste d'autorisation.",
+  optAllowTooMany: "La liste d'autorisation peut contenir jusqu'à $1 sites.",
   optAllowUserDisabled: "Votre organisation n'autorise pas votre propre liste d'autorisation.",
   optManagedAllowlist: "Sites autorisés par votre organisation",
   optCount: "$1 entrées",
@@ -1101,6 +1117,8 @@ export const de: Record<MessageKey, string> = {
   optAllowSharedParent:
     "Mit Subdomains würde auch $1 zugelassen, wo jeder Seiten veröffentlichen kann. Fügen Sie sie ohne Subdomains hinzu.",
   optAllowlistEmpty: "Keine Websites.",
+  optAllowDuplicate: "Diese Website steht bereits auf der Zulassungsliste.",
+  optAllowTooMany: "Die Zulassungsliste kann bis zu $1 Websites enthalten.",
   optAllowUserDisabled: "Ihre Organisation erlaubt keine eigene Zulassungsliste.",
   optManagedAllowlist: "Von Ihrer Organisation zugelassene Websites",
   optCount: "Einträge: $1",
@@ -1235,6 +1253,8 @@ export const it: Record<MessageKey, string> = {
   optAllowSharedParent:
     "Includere i sottodomini consentirebbe anche $1, dove chiunque può pubblicare pagine. Aggiungilo senza sottodomini.",
   optAllowlistEmpty: "Nessun sito.",
+  optAllowDuplicate: "Questo sito è già nell'elenco consentiti.",
+  optAllowTooMany: "L'elenco consentiti può contenere fino a $1 siti.",
   optAllowUserDisabled: "La tua organizzazione non consente un tuo elenco consentiti.",
   optManagedAllowlist: "Siti consentiti dalla tua organizzazione",
   optCount: "Voci: $1",
@@ -1362,6 +1382,8 @@ export const ru: Record<MessageKey, string> = {
   optAllowSharedParent:
     "С поддоменами будет разрешён и $1, где любой может публиковать страницы. Добавьте без поддоменов.",
   optAllowlistEmpty: "Сайтов нет.",
+  optAllowDuplicate: "Этот сайт уже есть в списке разрешённых.",
+  optAllowTooMany: "В списке разрешённых может быть не более $1 сайтов.",
   optAllowUserDisabled: "Ваша организация не разрешает собственный список разрешённых.",
   optManagedAllowlist: "Сайты, разрешённые вашей организацией",
   optCount: "Записей: $1",

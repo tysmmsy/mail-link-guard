@@ -15,7 +15,13 @@ import { BODY_SELECTOR, isGmailHost } from "../core/gmail.ts";
 import { analyzeLink, type LinkAnalysis } from "../core/link.ts";
 import { type Effective, effectiveSettings, loadPolicy, type Policy } from "../core/policy.ts";
 import { loadSettings, onSettingsChanged, saveSettings } from "../core/settings.ts";
-import { closeDialog, handleDialogKey, isDialogEvent, showDialog } from "./dialog.ts";
+import {
+  closeDialog,
+  handleDialogKey,
+  isDialogEvent,
+  showDialog,
+  showReloadNotice,
+} from "./dialog.ts";
 
 start();
 
@@ -89,7 +95,12 @@ function start(): void {
   const onLinkActivation = (e: MouseEvent) => {
     if (e.type === "click" && e.button !== 0) return;
     if (e.type === "auxclick" && e.button !== 1) return;
+    // The last settings this copy read still apply: if checking was off, stay out of the way.
     if (isDialogEvent(e) || settings?.enabled === false) return;
+    if (!contextAlive()) {
+      retire(e);
+      return;
+    }
 
     const anchor = anchorFrom(e);
     if (!anchor) return;
@@ -120,16 +131,38 @@ function start(): void {
     show(analysis, block);
   };
 
+  // After the extension is updated, reloaded or removed, a script already running in an
+  // open tab loses access to chrome.* APIs ("Extension context invalidated"), and the new
+  // version runs only once the tab is reloaded. Until then this copy holds links in the
+  // message body with a notice to reload, rather than letting them through unchecked.
+  const listen = (type: string, fn: EventListener) => window.addEventListener(type, fn, true);
+  const contextAlive = (): boolean => {
+    try {
+      return Boolean(chrome.runtime?.id);
+    } catch {
+      return false;
+    }
+  };
+  const retire = (e: MouseEvent) => {
+    closeDialog();
+    const anchor = anchorFrom(e);
+    if (anchor?.closest(BODY_SELECTOR) && analyzeLink(anchor.href, "")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      showReloadNotice();
+    }
+  };
+
   const onKey = (e: KeyboardEvent) => {
     if (isDialogEvent(e)) handleDialogKey(e);
   };
 
   // Capture on window runs before any listener Gmail registers, so Gmail
   // never sees a click that is held for confirmation.
-  window.addEventListener("click", onLinkActivation, true);
-  window.addEventListener("auxclick", onLinkActivation, true);
-  for (const type of ["keydown", "keypress", "keyup"] as const) {
-    window.addEventListener(type, onKey, true);
+  listen("click", onLinkActivation as EventListener);
+  listen("auxclick", onLinkActivation as EventListener);
+  for (const type of ["keydown", "keypress", "keyup"]) {
+    listen(type, onKey as EventListener);
   }
   // Text typed or pasted into the dialog also travels in these composed events
   // (beforeinput and composition events carry the characters). Stop them here so
@@ -148,7 +181,7 @@ function start(): void {
     "copy",
     "cut",
   ]) {
-    window.addEventListener(type, shield, true);
+    listen(type, shield);
   }
 
   onSettingsChanged(() => void refresh());
