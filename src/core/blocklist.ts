@@ -33,7 +33,11 @@ export const MAX_ENTRIES = 10_000;
 export const MAX_NOTE_LENGTH = 200;
 export const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
 export const MAX_PATTERN_LENGTH = 500;
-/** Longer URLs are cut before regex testing, to bound the time a pattern can take per click. */
+/**
+ * Every form of a URL is cut to this length before wildcard and regex testing, to bound
+ * the time a pattern can take per click. A host name is at most 253 characters, so a cut
+ * host or path belongs to no reachable site.
+ */
 const MAX_TESTED_URL_LENGTH = 4096;
 
 export interface BlocklistExport {
@@ -234,7 +238,10 @@ function formsOf(url: URL): UrlForms {
     uHost === host
       ? href
       : href.replace(`//${url.host}`, `//${uHost}${url.port ? `:${url.port}` : ""}`);
-  const pick = (a: string, b: string) => (a === b ? [a] : [a, b]);
+  const pick = (a: string, b: string) => {
+    const [x, y] = [a.slice(0, MAX_TESTED_URL_LENGTH), b.slice(0, MAX_TESTED_URL_LENGTH)];
+    return x === y ? [x] : [x, y];
+  };
   return {
     host: pick(host, uHost),
     hostPath: pick(host + rest, uHost + rest),

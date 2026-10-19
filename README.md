@@ -129,7 +129,7 @@ To block every domain that contains any Greek or Cyrillic letter, add this regul
 ^https?://[^/?#]*[\u0370-\u03ff\u0400-\u052f]
 ```
 
-A regular expression runs on every click in a message, and a badly written one (nested repetition such as `(a+)+`) can take a long time on some URLs. The URL is cut to 4,096 characters before testing, but prefer simple patterns, and review regular expressions in files you import from others.
+A regular expression runs on every click in a message, and a badly written one (nested repetition such as `(a+)+`) can take a long time on some URLs. The URL, the host and the host with its path are each cut to 4,096 characters before testing, but prefer simple patterns, and review regular expressions in files you import from others.
 
 ## Privacy
 
