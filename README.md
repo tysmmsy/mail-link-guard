@@ -25,13 +25,13 @@ The Chrome Web Store listing is under review; the link will be added here once i
 ### 1. Download the file
 
 1. Open the [Releases page](https://github.com/tysmmsy/mail-link-guard/releases/latest).
-2. Under "Assets", click `mail-link-guard-0.1.2.zip` (the number changes with the version) to download it.
+2. Under "Assets", click `mail-link-guard-0.1.3.zip` (the number changes with the version) to download it.
 
 ### 2. Put it somewhere permanent and unzip it
 
 Chrome loads the unzipped folder every time it starts, so if the folder is deleted or moved, the extension stops working. The Downloads folder is easy to clean out by accident, so avoid it.
 
-- Mac: create a folder named `Chrome Extensions` in your home folder and move the zip into it. Double-click the zip; a folder named `mail-link-guard-0.1.2` appears next to it.
+- Mac: create a folder named `Chrome Extensions` in your home folder and move the zip into it. Double-click the zip; a folder named `mail-link-guard-0.1.3` appears next to it.
 - Windows: create a folder named `Chrome Extensions` in `Documents` and move the zip into it. Right-click the zip and choose "Extract All".
 
 Rename the new folder to `mail-link-guard`, without the version number. Using the same folder for later versions keeps your blocklist and other settings. Open the folder and check that it contains a file named `manifest.json`.
