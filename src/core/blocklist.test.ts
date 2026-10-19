@@ -187,6 +187,15 @@ describe("wildcard and regex entries", () => {
     assert.equal(findBlock([entry("wildcard", "http://*")], new URL("https://a.test/")), null);
   });
 
+  it("tests a wildcard against at most 4,096 characters of the host", () => {
+    const list = [entry("wildcard", "*-login-*.example")];
+    const long = new URL(`https://${"-login-".repeat(20_000)}x.test/`);
+    const start = performance.now();
+    assert.equal(findBlock(list, long), null);
+    assert.ok(performance.now() - start < 200);
+    assert.ok(findBlock(list, new URL("https://a-login-b.example/")));
+  });
+
   it("lets a wildcard catch any host containing a character, in its real form", () => {
     const list = [entry("wildcard", "*α*")];
     assert.ok(findBlock(list, ascii("αmazon.co.jp")));
