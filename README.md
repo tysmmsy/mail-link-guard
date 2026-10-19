@@ -2,7 +2,7 @@
 
 [日本語](README.ja.md)
 
-Mail Link Guard is an open source Chrome extension (MIT License) that pauses a link click in webmail and shows where the link really goes before it opens. Destinations on your own blocklist are never opened. Everything stays in your browser: the extension stores only its on/off setting and your blocklist, and it makes no network requests.
+Mail Link Guard is an open source Chrome extension (MIT License) that pauses a link click in webmail and shows where the link really goes before it opens. Destinations on your own blocklist are never opened. Everything stays in your browser: the extension stores only its on/off setting, your blocklist and your allowlist, and it makes no network requests.
 
 ![Confirmation dialog](release-assets/confirm-en.png)
 
@@ -20,14 +20,26 @@ The extension runs only on `https://mail.google.com/*`.
 
 ## Install
 
-The Chrome Web Store listing is under review; the link will be added here once it is live. Until then, follow these steps. No programming knowledge is needed.
+### From the Chrome Web Store
 
-### 1. Download the file
+1. Open [Mail Link Guard on the Chrome Web Store](https://chromewebstore.google.com/detail/mail-link-guard/mofhdbekklmpogblinkohjliliopgkog).
+2. Click "Add to Chrome", then "Add extension".
+3. Reload any open Gmail tabs.
+
+Updates are installed automatically.
+
+If you installed the zip version before, remove it in `chrome://extensions` so the two copies do not both run. The store version keeps its own settings, so export your blocklist from the old copy first and import it into the new one.
+
+### From the zip file
+
+Use this to install a version that is not on the store yet. No programming knowledge is needed.
+
+#### 1. Download the file
 
 1. Open the [Releases page](https://github.com/tysmmsy/mail-link-guard/releases/latest).
 2. Under "Assets", click `mail-link-guard-0.1.3.zip` (the number changes with the version) to download it.
 
-### 2. Put it somewhere permanent and unzip it
+#### 2. Put it somewhere permanent and unzip it
 
 Chrome loads the unzipped folder every time it starts, so if the folder is deleted or moved, the extension stops working. The Downloads folder is easy to clean out by accident, so avoid it.
 
@@ -36,7 +48,7 @@ Chrome loads the unzipped folder every time it starts, so if the folder is delet
 
 Rename the new folder to `mail-link-guard`, without the version number. Using the same folder for later versions keeps your blocklist and other settings. Open the folder and check that it contains a file named `manifest.json`.
 
-### 3. Load it into Chrome
+#### 3. Load it into Chrome
 
 1. Type `chrome://extensions` in Chrome's address bar and press Enter.
 2. Turn on "Developer mode" in the top right.
@@ -45,13 +57,11 @@ Rename the new folder to `mail-link-guard`, without the version number. Using th
 5. When "Mail Link Guard" appears in the list, you are done. Pin it from the puzzle-piece icon in the toolbar for easy access.
 6. Reload any open Gmail tabs.
 
-### Updating to a new version
+#### Updating to a new version
 
 1. Download and unzip the new zip.
 2. Replace the contents of the `mail-link-guard` folder inside `Chrome Extensions` with the contents of the new folder. Keep the folder's name and location.
 3. In `chrome://extensions`, press the reload button (circular arrow) on the Mail Link Guard card, then reload any open Gmail tabs.
-
-Once the extension is on the Chrome Web Store, installing from there updates it automatically.
 
 ### Initial settings
 
