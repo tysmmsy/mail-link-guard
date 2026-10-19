@@ -49,6 +49,40 @@ function withoutFragment(url: URL): string {
   return copy.href;
 }
 
+/** Decodes each valid %XX sequence; malformed ones are left as they are instead of failing. */
+function decodeEach(s: string): string {
+  return s.replace(/(?:%[0-9a-f]{2})+/gi, (run) => {
+    try {
+      return decodeURIComponent(run);
+    } catch {
+      return run.replace(/%([0-9a-f]{2})/gi, (m, hex) => {
+        const code = Number.parseInt(hex, 16);
+        return code < 0x80 ? String.fromCharCode(code) : m;
+      });
+    }
+  });
+}
+
+/**
+ * The form URL-prefix entries are compared in, so that spellings a server treats as the
+ * same page also match: percent-escapes decoded (repeatedly, up to 3 times, for double
+ * encoding), the host's trailing root dot dropped, and everything lower-cased. This is
+ * used only to compare; the link that opens is never changed. It can match a little more
+ * than the exact URL (a case-sensitive server's other page), which errs on blocking.
+ */
+export function comparableUrl(url: URL): string {
+  const copy = new URL(url.href);
+  copy.hash = "";
+  copy.hostname = copy.hostname.replace(/\.$/, "");
+  let s = copy.href;
+  for (let i = 0; i < 3; i++) {
+    const next = decodeEach(s);
+    if (next === s) break;
+    s = next;
+  }
+  return s.slice(0, MAX_TESTED_URL_LENGTH).toLowerCase();
+}
+
 /** Strips the /.../ delimiters people often copy along with a regex. */
 function stripRegexDelimiters(s: string): string {
   const m = /^\/(.+)\/[a-z]*$/s.exec(s);
@@ -187,6 +221,8 @@ interface UrlForms {
   host: string[];
   hostPath: string[];
   href: string[];
+  /** comparableUrl(url), what URL-prefix entries are compared with. */
+  comparable: string;
 }
 
 function formsOf(url: URL): UrlForms {
@@ -203,6 +239,7 @@ function formsOf(url: URL): UrlForms {
     host: pick(host, uHost),
     hostPath: pick(host + rest, uHost + rest),
     href: pick(href, uHref),
+    comparable: comparableUrl(url),
   };
 }
 
@@ -212,8 +249,12 @@ function matcherFor(e: BlockEntry): Matcher | null {
   switch (e.type) {
     case "domain":
       return (url) => isSameOrSubdomain(url.hostname, e.value);
-    case "url":
-      return (_url, f) => f.href[0].startsWith(e.value);
+    case "url": {
+      const entryUrl = parseHttpUrl(e.value);
+      if (!entryUrl) return null;
+      const prefix = comparableUrl(entryUrl);
+      return (_url, f) => f.comparable.startsWith(prefix);
+    }
     case "wildcard": {
       const re = wildcardToRegex(e.value);
       const target: keyof UrlForms = e.value.includes("://")

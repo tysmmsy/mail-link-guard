@@ -70,7 +70,7 @@ The six blocklist entries are added once, on first install. An entry you remove 
 | Type | Matches | Example |
 |---|---|---|
 | Domain | The domain and its subdomains | `evil.example` |
-| URL | URLs that start with the value (the `#` part is ignored) | `https://cdn.example.com/phish/` |
+| URL | URLs that start with the value. Case, percent-encoding (`%65` for `e`) and the `#` part are ignored, so other spellings of the same page match too. Prefer a domain entry when you can. | `https://cdn.example.com/phish/` |
 | Wildcard | `*` matches any characters. Without `/` the pattern is matched against the domain, with `://` against the whole URL, otherwise against domain + path. Case-insensitive. | `*.amaz0n.*`, `*α*`, `*/wp-admin/*` |
 | Regular expression | A JavaScript regular expression tested against the whole URL, ignoring case. Up to 500 characters. | `^https?://[^/]*paypa[l1]\.` |
 
