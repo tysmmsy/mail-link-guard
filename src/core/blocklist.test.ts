@@ -50,6 +50,26 @@ describe("findBlock", () => {
     assert.equal(findBlock(list, new URL("https://evil.test.example.com/")), null);
   });
 
+  it("matches URL entries across case, percent-encoding and a trailing dot", () => {
+    const list = [entry("url", "https://contoso.sharepoint.com/sites/ext/")];
+    for (const href of [
+      "https://contoso.sharepoint.com/SITES/ext/fake",
+      "https://contoso.sharepoint.com/sites/%65xt/fake",
+      "https://contoso.sharepoint.com/sites/%2565xt/fake",
+      "https://contoso.sharepoint.com./sites/ext/fake",
+      "https://CONTOSO.sharepoint.com/Sites/Ext/",
+    ]) {
+      assert.ok(findBlock(list, new URL(href)), href);
+    }
+    assert.equal(findBlock(list, new URL("https://contoso.sharepoint.com/sites/other/")), null);
+  });
+
+  it("tolerates malformed percent sequences", () => {
+    const list = [entry("url", "https://a.test/x/")];
+    assert.ok(findBlock(list, new URL("https://a.test/x/%E0%A4%A")));
+    assert.equal(findBlock(list, new URL("https://a.test/y/%ZZ")), null);
+  });
+
   it("matches URL entries by prefix, ignoring the fragment", () => {
     assert.ok(findBlock(list, new URL("https://cdn.example.com/phish/page#x")));
     assert.equal(findBlock(list, new URL("https://cdn.example.com/other")), null);
